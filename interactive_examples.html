@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI API Interactive Example</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f1f9ff;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        
+        .code-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .parameter-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background-color: #ffecec;
+            color: #d63031;
+            padding: 15px;
+            border-left: 4px solid #d63031;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive API Examples</h1>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('openai')">OpenAI API</div>
+        <div class="tab" onclick="showTab('vector')">Vector Store</div>
+    </div>
+    
+    <div id="openai" class="tab-content active">
+        <div class="container">
+            <h2>OpenAI API Explorer</h2>
+            <p>This interactive example demonstrates how to use the OpenAI API to generate text completions. Customize the parameters below to see how they affect the response.</p>
+            
+            <div class="form-group">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" placeholder="Enter your prompt here...">Explain what an API is in simple terms.</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="model">Model:</label>
+                <select id="model">
+                    <option value="gpt-4o">GPT-4o (Most capable)</option>
+                    <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Faster)</option>
+                </select>
+                <div class="parameter-description">The AI model that will generate the response. Different models have different capabilities and speeds.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="temperature">Temperature: <span id="temp-value">0.7</span></label>
+                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7" oninput="updateTempValue()">
+                <div class="parameter-description">Controls randomness: 0 is focused and deterministic, 1 is more random and creative.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="max-tokens">Maximum Length: <span id="tokens-value">150</span> tokens</label>
+                <input type="range" id="max-tokens" min="50" max="500" step="50" value="150" oninput="updateTokensValue()">
+                <div class="parameter-description">The maximum number of tokens (roughly words) to generate in the response.</div>
+            </div>
+            
+            <button onclick="simulateOpenAIRequest()">Generate Response</button>
+            
+            <div class="loading" id="loading-openai">
+                <div class="loading-spinner"></div>
+                <p>Generating response...</p>
+            </div>
+            
+            <div class="result" id="result-openai" style="display: none;"></div>
+            
+            <div class="code-block" id="code-openai">
+import os
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("OPENAI_API_KEY")
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=api_key)
+
+# Define parameters
+prompt = "Explain what an API is in simple terms."
+model = "gpt-4o"
+temperature = 0.7
+max_tokens = 150
+
+# Make the API call
+response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {"role": "user", "content": prompt}
+    ],
+    temperature=temperature,
+    max_tokens=max_tokens
+)
+
+# Print the response
+print(response.choices[0].message.content)
+</div>
+        </div>
+    </div>
+    
+    <div id="vector" class="tab-content">
+        <div class="container">
+            <h2>Vector Store Explorer</h2>
+            <p>This interactive example demonstrates how vector stores work by showing semantic search in action. Enter a search query to find the most similar documents.</p>
+            
+            <div class="form-group">
+                <label for="search-query">Search Query:</label>
+                <input type="text" id="search-query" placeholder="Enter your search query..." value="How do computer programs communicate?">
+            </div>
+            
+            <div class="form-group">
+                <label for="num-results">Number of Results: <span id="results-value">3</span></label>
+                <input type="range" id="num-results" min="1" max="5" step="1" value="3" oninput="updateResultsValue()">
+                <div class="parameter-description">The number of similar documents to retrieve.</div>
+            </div>
+            
+            <button onclick="simulateVectorSearch()">Search Documents</button>
+            
+            <div class="loading" id="loading-vector">
+                <div class="loading-spinner"></div>
+                <p>Searching documents...</p>
+            </div>
+            
+            <div class="result" id="result-vector" style="display: none;"></div>
+            
+            <div class="code-block" id="code-vector">
+import os
+import numpy as np
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+class SimpleVectorSearch:
+    def __init__(self):
+        """Initialize the vector search with empty documents and embeddings."""
+        self.documents = []
+        self.embeddings = []
+        
+        # Get API key from environment variable
+        api_key = os.getenv("OPENAI_API_KEY")
+        
+        # Initialize the OpenAI client
+        self.client = OpenAI(api_key=api_key)
+    
+    def add_document(self, text):
+        """Add a document to the vector search."""
+        # Get embedding from OpenAI
+        embedding = self._get_embedding(text)
+        
+        # Store document and embedding
+        self.documents.append(text)
+        self.embeddings.append(embedding)
+    
+    def search(self, query, top_k=3):
+        """Search for documents similar to the query."""
+        # Get embedding for the query
+        query_embedding = self._get_embedding(query)
+        
+        # Calculate similarity with all documents
+        similarities = []
+        for doc_embedding in self.embeddings:
+            similarity = self._calculate_similarity(query_embedding, doc_embedding)
+            similarities.append(similarity)
+        
+        # Get indices of top_k most similar documents
+        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        
+        # Return results
+        results = []
+        for idx in top_indices:
+            results.append((self.documents[idx], similarities[idx]))
+        
+        return results
+    
+    def _get_embedding(self, text):
+        """Get embedding from OpenAI."""
+        response = self.client.embeddings.create(
+            model="text-embedding-ada-002",
+            input=text
+        )
+        return response.data[0].embedding
+    
+    def _calculate_similarity(self, embedding1, embedding2):
+        """Calculate cosine similarity between two embeddings."""
+        return np.dot(embedding1, embedding2) / (
+            np.linalg.norm(embedding1) * np.linalg.norm(embedding2)
+        )
+
+# Create a vector search
+search = SimpleVectorSearch()
+
+# Add some documents
+search.add_document("APIs are interfaces that allow different software applications to communicate with each other.")
+search.add_document("Python is a popular programming language for data science and artificial intelligence.")
+search.add_document("Vector embeddings represent text as numbers to capture semantic meaning.")
+search.add_document("Authentication is important for securing API access and protecting sensitive data.")
+search.add_document("REST APIs use HTTP methods like GET, POST, PUT, and DELETE to interact with resources.")
+
+# Search for similar documents
+query = "How do computer programs communicate?"
+results = search.search(query, top_k=3)
+
+# Display results
+for i, (document, similarity) in enumerate(results):
+    print(f"{i+1}. Similarity: {similarity:.4f}")
+    print(f"   Document: {document}\n")
+</div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Deactivate all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show the selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate the clicked tab
+            event.currentTarget.classList.add('active');
+        }
+        
+        function updateTempValue() {
+            const value = document.getElementById('temperature').value;
+            document.getElementById('temp-value').textContent = value;
+            updateOpenAICode();
+        }
+        
+        function updateTokensValue() {
+            const value = document.getElementById('max-tokens').value;
+            document.getElementById('tokens-value').textContent = value;
+            updateOpenAICode();
+        }
+        
+        function updateResultsValue() {
+            const value = document.getElementById('num-results').value;
+            document.getElementById('results-value').textContent = value;
+            updateVectorCode();
+        }
+        
+        function updateOpenAICode() {
+            const prompt = document.getElementById('prompt').value;
+            const model = document.getElementById('model').value;
+            const temperature = document.getElementById('temperature').value;
+            const maxTokens = document.getElementById('max-tokens').value;
+            
+            const code = `import os
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("OPENAI_API_KEY")
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=api_key)
+
+# Define parameters
+prompt = "${prompt.replace(/"/g, '\\"')}"
+model = "${model}"
+temperature = ${temperature}
+max_tokens = ${maxTokens}
+
+# Make the API call
+response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {"role": "user", "content": prompt}
+    ],
+    temperature=temperature,
+    max_tokens=max_tokens
+)
+
+# Print the response
+print(response.choices[0].message.content)`;
+            
+            document.getElementById('code-openai').textContent = code;
+        }
+        
+        function updateVectorCode() {
+            const query = document.getElementById('search-query').value;
+            const numResults = document.getElementById('num-results').value;
+            
+            const code = `import os
+import numpy as np
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+class SimpleVectorSearch:
+    def __init__(self):
+        """Initialize the vector search with empty documents and embeddings."""
+        self.documents = []
+        self.embeddings = []
+        
+        # Get API key from environment variable
+        api_key = os.getenv("OPENAI_API_KEY")
+        
+        # Initialize the OpenAI client
+        self.client = OpenAI(api_key=api_key)
+    
+    def add_document(self, text):
+        """Add a document to the vector search."""
+        # Get embedding from OpenAI
+        embedding = self._get_embedding(text)
+        
+        # Store document and embedding
+        self.documents.append(text)
+        self.embeddings.append(embedding)
+    
+    def search(self, query, top_k=3):
+        """Search for documents similar to the query."""
+        # Get embedding for the query
+        query_embedding = self._get_embedding(query)
+        
+        # Calculate similarity with all documents
+        similarities = []
+        for doc_embedding in self.embeddings:
+            similarity = self._calculate_similarity(query_embedding, doc_embedding)
+            similarities.append(similarity)
+        
+        # Get indices of top_k most similar documents
+        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        
+        # Return results
+        results = []
+        for idx in top_indices:
+            results.append((self.documents[idx], similarities[idx]))
+        
+        return results
+    
+    def _get_embedding(self, text):
+        """Get embedding from OpenAI."""
+        response = self.client.embeddings.create(
+            model="text-embedding-ada-002",
+            input=text
+        )
+        return response.data[0].embedding
+    
+    def _calculate_similarity(self, embedding1, embedding2):
+        """Calculate cosine similarity between two embeddings."""
+        return np.dot(embedding1, embedding2) / (
+            np.linalg.norm(embedding1) * np.linalg.norm(embedding2)
+        )
+
+# Create a vector search
+search = SimpleVectorSearch()
+
+# Add some documents
+search.add_document("APIs are interfaces that allow different software applications to communicate with each other.")
+search.add_document("Python is a popular programming language for data science and artificial intelligence.")
+search.add_document("Vector embeddings represent text as numbers to capture semantic meaning.")
+search.add_document("Authentication is important for securing API access and protecting sensitive data.")
+search.add_document("REST APIs use HTTP methods like GET, POST, PUT, and DELETE to interact with resources.")
+
+# Search for similar documents
+query = "${query.replace(/"/g, '\\"')}"
+results = search.search(query, top_k=${numResults})
+
+# Display results
+for i, (document, similarity) in enumerate(results):
+    print(f"{i+1}. Similarity: {similarity:.4f}")
+    print(f"   Document: {document}\\n")`;
+            
+            document.getElementById('code-vector').textContent = code;
+        }
+        
+        function simulateOpenAIRequest() {
+            const prompt = document.getElementById('prompt').value;
+            const model = document.getElementById('model').value;
+            const temperature = parseFloat(document.getElementById('temperature').value);
+            
+            // Show loading indicator
+            document.getElementById('loading-openai').style.display = 'block';
+            document.getElementById('result-openai').style.display = 'none';
+            
+            // Simulate API delay
+            setTimeout(() => {
+                // Hide loading indicator
+                document.getElementById('loading-openai').style.display = 'none';
+                
+                // Generate a simulated response based on the prompt and parameters
+                let response;
+                
+                if (prompt.toLowerCase().includes('api')) {
+                    response = generateAPIResponse(temperature);
+                } else if (prompt.toLowerCase().includes('python')) {
+                    response = generatePythonResponse(temperature);
+                } else {
+                    response = "I'm not sure how to respond to that prompt. Try asking about APIs or Python!";
+                }
+                
+                // Display the result
+                document.getElementById('result-openai').textContent = response;
+                document.getElementById('result-openai').style.display = 'block';
+            }, 1500);
+        }
+        
+        function generateAPIResponse(temperature) {
+            const responses = [
+                "An API (Application Programming Interface) is like a waiter in a restaurant. You (the customer) don't need to know how the food is prepared in the kitchen. You just tell the waiter what you want, and the waiter brings it to you. Similarly, an API allows different software applications to communicate with each other without needing to know how the other works internally.",
+                
+                "Think of an API as a power outlet in your wall. You don't need to understand how electricity works or how it gets to your home. You just plug in your device, and it works! APIs provide a standardized way for different software systems to connect and exchange information, without having to understand each other's internal workings.",
+                
+                "An API is like a messenger that takes your request, tells the system what you want to do, and then returns the response back to you. It's a set of rules that allows different software applications to communicate with each other. For example, when you use a weather app, it's using an API to fetch weather data from a weather service."
+            ];
+            
+            // Use temperature to determine randomness
+            if (temperature < 0.3) {
+                return responses[0]; // Most straightforward
+            } else if (temperature < 0.7) {
+                return responses[1]; // Middle ground
+            } else {
+                return responses[2]; // More varied
+            }
+        }
+        
+        function generatePythonResponse(temperature) {
+            const responses = [
+                "Python is a high-level programming language known for its simplicity and readability. It uses indentation to define code blocks and has a clean, easy-to-understand syntax that makes it an excellent choice for beginners. Python is versatile and can be used for web development, data analysis, artificial intelligence, scientific computing, and more.",
+                
+                "Python is like the Swiss Army knife of programming languages! It's incredibly versatile, easy to learn, and has a massive ecosystem of libraries and frameworks. Whether you're building websites, analyzing data, creating AI models, or automating tasks, Python has got you covered. Its readable syntax makes it perfect for beginners, while its powerful features satisfy experienced developers.",
+                
+                "Python slithered its way into becoming one of the world's most popular programming languages because it's both powerful and approachable. Its philosophy emphasizes code readability with its use of significant whitespace. Python's support for multiple programming paradigms (object-oriented, procedural, functional) gives developers flexibility in how they solve problems. From Instagram to NASA, organizations worldwide rely on Python for everything from web apps to rocket science!"
+            ];
+            
+            // Use temperature to determine randomness
+            if (temperature < 0.3) {
+                return responses[0]; // Most straightforward
+            } else if (temperature < 0.7) {
+                return responses[1]; // Middle ground
+            } else {
+                return responses[2]; // More varied
+            }
+        }
+        
+        function simulateVectorSearch() {
+            const query = document.getElementById('search-query').value;
+            const numResults = parseInt(document.getElementById('num-results').value);
+            
+            // Show loading indicator
+            document.getElementById('loading-vector').style.display = 'block';
+            document.getElementById('result-vector').style.display = 'none';
+            
+            // Simulate API delay
+            setTimeout(() => {
+                // Hide loading indicator
+                document.getElementById('loading-vector').style.display = 'none';
+                
+                // Predefined documents
+                const documents = [
+                    "APIs are interfaces that allow different software applications to communicate with each other.",
+                    "Python is a popular programming language for data science and artificial intelligence.",
+                    "Vector embeddings represent text as numbers to capture semantic meaning.",
+                    "Authentication is important for securing API access and protecting sensitive data.",
+                    "REST APIs use HTTP methods like GET, POST, PUT, and DELETE to interact with resources."
+                ];
+                
+                // Calculate simulated similarities based on keyword matching
+                const similarities = documents.map(doc => {
+                    const queryWords = query.toLowerCase().split(/\s+/);
+                    const docWords = doc.toLowerCase().split(/\s+/);
+                    
+                    let matchCount = 0;
+                    for (const queryWord of queryWords) {
+                        for (const docWord of docWords) {
+                            if (docWord.includes(queryWord) || queryWord.includes(docWord)) {
+                                matchCount++;
+                            }
+                        }
+                    }
+                    
+                    // Calculate similarity score (simplified)
+                    return matchCount / (queryWords.length + docWords.length) * 2;
+                });
+                
+                // Sort documents by similarity
+                const results = documents.map((doc, i) => ({ doc, similarity: similarities[i] }))
+                    .sort((a, b) => b.similarity - a.similarity)
+                    .slice(0, numResults);
+                
+                // Format results
+                let resultText = `Search Query: "${query}"\n\nResults:\n`;
+                results.forEach((result, i) => {
+                    resultText += `\n${i + 1}. Similarity: ${result.similarity.toFixed(4)}\n   Document: ${result.doc}\n`;
+                });
+                
+                // Display the result
+                document.getElementById('result-vector').textContent = resultText;
+                document.getElementById('result-vector').style.display = 'block';
+            }, 1500);
+        }
+        
+        // Initialize code displays
+        document.getElementById('prompt').addEventListener('input', updateOpenAICode);
+        document.getElementById('model').addEventListener('change', updateOpenAICode);
+        document.getElementById('search-query').addEventListener('input', updateVectorCode);
+        
+        // Initialize with default values
+        updateOpenAICode();
+        updateVectorCode();
+    </script>
+</body>
+</html>

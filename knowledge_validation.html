@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Fundamentals Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .quiz-container {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .quiz-options {
+            margin-left: 20px;
+        }
+        
+        .quiz-option {
+            margin-bottom: 10px;
+        }
+        
+        .quiz-feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f9ff;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            background-color: #3498db;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .explanation {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 10px 15px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .certificate {
+            text-align: center;
+            padding: 40px;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        
+        .certificate h2 {
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        
+        .certificate p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        
+        .certificate .date {
+            font-style: italic;
+            margin-top: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Fundamentals Knowledge Check</h1>
+    <p>Test your understanding of API concepts with these interactive exercises and quizzes.</p>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('fundamentals')">API Fundamentals</div>
+        <div class="tab" onclick="showTab('types')">API Types</div>
+        <div class="tab" onclick="showTab('ai-apis')">AI APIs</div>
+        <div class="tab" onclick="showTab('vector-stores')">Vector Stores</div>
+    </div>
+    
+    <div id="fundamentals" class="tab-content active">
+        <div class="container">
+            <h2>API Fundamentals Quiz</h2>
+            <p>Test your understanding of basic API concepts.</p>
+            
+            <div class="progress-container">
+                <div id="progress-fundamentals" class="progress-bar" style="width: 0%"></div>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" id="f-question-1">
+                    <h3>Question 1:</h3>
+                    <p>What does API stand for?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q1" id="f-q1a" value="a">
+                            <label for="f-q1a">Application Programming Interface</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q1" id="f-q1b" value="b">
+                            <label for="f-q1b">Automated Program Integration</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q1" id="f-q1c" value="c">
+                            <label for="f-q1c">Application Process Integration</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q1" id="f-q1d" value="d">
+                            <label for="f-q1d">Automated Programming Interface</label>
+                        </div>
+                    </div>
+                    <div id="feedback-f-q1" class="quiz-feedback"></div>
+                    <div id="explanation-f-q1" class="explanation">
+                        API stands for Application Programming Interface. It's a set of rules and protocols that allows different software applications to communicate with each other.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="f-question-2" style="display: none;">
+                    <h3>Question 2:</h3>
+                    <p>Which of the following is the best analogy for an API?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q2" id="f-q2a" value="a">
+                            <label for="f-q2a">A computer program</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q2" id="f-q2b" value="b">
+                            <label for="f-q2b">A waiter in a restaurant taking your order to the kitchen</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q2" id="f-q2c" value="c">
+                            <label for="f-q2c">A database of information</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q2" id="f-q2d" value="d">
+                            <label for="f-q2d">A website's user interface</label>
+                        </div>
+                    </div>
+                    <div id="feedback-f-q2" class="quiz-feedback"></div>
+                    <div id="explanation-f-q2" class="explanation">
+                        A waiter in a restaurant is a good analogy for an API. The waiter (API) takes your order (request), delivers it to the kitchen (server/service), and brings back your food (response). You don't need to know how the food is prepared in the kitchen, just like you don't need to know how the service processes your request.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="f-question-3" style="display: none;">
+                    <h3>Question 3:</h3>
+                    <p>What is the primary purpose of an API?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q3" id="f-q3a" value="a">
+                            <label for="f-q3a">To create user interfaces</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q3" id="f-q3b" value="b">
+                            <label for="f-q3b">To store data in databases</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q3" id="f-q3c" value="c">
+                            <label for="f-q3c">To allow different software applications to communicate with each other</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q3" id="f-q3d" value="d">
+                            <label for="f-q3d">To encrypt data for security</label>
+                        </div>
+                    </div>
+                    <div id="feedback-f-q3" class="quiz-feedback"></div>
+                    <div id="explanation-f-q3" class="explanation">
+                        The primary purpose of an API is to allow different software applications to communicate with each other. APIs define the methods and data formats that applications can use to request and exchange information, enabling integration between different systems.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="f-question-4" style="display: none;">
+                    <h3>Question 4:</h3>
+                    <p>In the context of APIs, what is a "request"?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q4" id="f-q4a" value="a">
+                            <label for="f-q4a">A message sent from a client to a server asking for something</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q4" id="f-q4b" value="b">
+                            <label for="f-q4b">The documentation that explains how to use an API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q4" id="f-q4c" value="c">
+                            <label for="f-q4c">The server that hosts the API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q4" id="f-q4d" value="d">
+                            <label for="f-q4d">The data returned from an API</label>
+                        </div>
+                    </div>
+                    <div id="feedback-f-q4" class="quiz-feedback"></div>
+                    <div id="explanation-f-q4" class="explanation">
+                        In the context of APIs, a "request" is a message sent from a client to a server asking for something. This could be to retrieve data, submit data, update information, or perform an action. The request typically includes information about what the client wants and any necessary authentication.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="f-question-5" style="display: none;">
+                    <h3>Question 5:</h3>
+                    <p>Which of the following is NOT typically included in an API response?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q5" id="f-q5a" value="a">
+                            <label for="f-q5a">Status code</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q5" id="f-q5b" value="b">
+                            <label for="f-q5b">Response data</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q5" id="f-q5c" value="c">
+                            <label for="f-q5c">Headers</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="f-q5" id="f-q5d" value="d">
+                            <label for="f-q5d">Server's source code</label>
+                        </div>
+                    </div>
+                    <div id="feedback-f-q5" class="quiz-feedback"></div>
+                    <div id="explanation-f-q5" class="explanation">
+                        A server's source code is NOT typically included in an API response. API responses usually include a status code (indicating success or failure), headers (containing metadata about the response), and the response data (the actual information requested). The server's source code remains private and is not exposed through the API.
+                    </div>
+                </div>
+                
+                <div id="f-next-button-container">
+                    <button onclick="checkFundamentalsQuestion(1)">Check Answer</button>
+                </div>
+                
+                <div id="f-result" class="result"></div>
+                
+                <div id="f-certificate" class="certificate">
+                    <h2>Certificate of Completion</h2>
+                    <p>This certifies that</p>
+                    <p><strong id="f-certificate-name">Student Name</strong></p>
+                    <p>has successfully completed the</p>
+                    <p><strong>API Fundamentals Knowledge Check</strong></p>
+                    <p class="date" id="f-certificate-date"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="types" class="tab-content">
+        <div class="container">
+            <h2>API Types Quiz</h2>
+            <p>Test your understanding of different API types and their characteristics.</p>
+            
+            <div class="progress-container">
+                <div id="progress-types" class="progress-bar" style="width: 0%"></div>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" id="t-question-1">
+                    <h3>Question 1:</h3>
+                    <p>Which API type uses HTTP methods (GET, POST, PUT, DELETE) to interact with resources?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q1" id="t-q1a" value="a">
+                            <label for="t-q1a">SOAP API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q1" id="t-q1b" value="b">
+                            <label for="t-q1b">REST API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q1" id="t-q1c" value="c">
+                            <label for="t-q1c">GraphQL API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q1" id="t-q1d" value="d">
+                            <label for="t-q1d">RPC API</label>
+                        </div>
+                    </div>
+                    <div id="feedback-t-q1" class="quiz-feedback"></div>
+                    <div id="explanation-t-q1" class="explanation">
+                        REST (Representational State Transfer) APIs use HTTP methods like GET, POST, PUT, and DELETE to interact with resources. These methods correspond to read, create, update, and delete operations respectively. REST APIs are designed around resources (like users, products, or orders) that are accessed via URLs.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="t-question-2" style="display: none;">
+                    <h3>Question 2:</h3>
+                    <p>What is a key advantage of GraphQL over REST?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q2" id="t-q2a" value="a">
+                            <label for="t-q2a">It's more secure</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q2" id="t-q2b" value="b">
+                            <label for="t-q2b">It allows clients to request exactly the data they need</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q2" id="t-q2c" value="c">
+                            <label for="t-q2c">It's easier to implement</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q2" id="t-q2d" value="d">
+                            <label for="t-q2d">It uses less bandwidth in all cases</label>
+                        </div>
+                    </div>
+                    <div id="feedback-t-q2" class="quiz-feedback"></div>
+                    <div id="explanation-t-q2" class="explanation">
+                        A key advantage of GraphQL over REST is that it allows clients to request exactly the data they need. With REST, endpoints return fixed data structures, which can lead to over-fetching (getting more data than needed) or under-fetching (not getting enough data, requiring multiple requests). GraphQL solves this by letting clients specify precisely what data they want in a single request.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="t-question-3" style="display: none;">
+                    <h3>Question 3:</h3>
+                    <p>Which API type typically uses XML format and is known for its strict contracts and built-in error handling?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q3" id="t-q3a" value="a">
+                            <label for="t-q3a">REST API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q3" id="t-q3b" value="b">
+                            <label for="t-q3b">GraphQL API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q3" id="t-q3c" value="c">
+                            <label for="t-q3c">SOAP API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q3" id="t-q3d" value="d">
+                            <label for="t-q3d">WebSocket API</label>
+                        </div>
+                    </div>
+                    <div id="feedback-t-q3" class="quiz-feedback"></div>
+                    <div id="explanation-t-q3" class="explanation">
+                        SOAP (Simple Object Access Protocol) APIs typically use XML format and are known for their strict contracts and built-in error handling. SOAP defines a standard communication protocol specification for XML-based message exchange. It's more rigid than REST but provides features like built-in error handling, security, and transaction compliance.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="t-question-4" style="display: none;">
+                    <h3>Question 4:</h3>
+                    <p>Which API type is best suited for real-time applications like chat or live updates?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q4" id="t-q4a" value="a">
+                            <label for="t-q4a">REST API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q4" id="t-q4b" value="b">
+                            <label for="t-q4b">WebSocket API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q4" id="t-q4c" value="c">
+                            <label for="t-q4c">SOAP API</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q4" id="t-q4d" value="d">
+                            <label for="t-q4d">XML-RPC API</label>
+                        </div>
+                    </div>
+                    <div id="feedback-t-q4" class="quiz-feedback"></div>
+                    <div id="explanation-t-q4" class="explanation">
+                        WebSocket APIs are best suited for real-time applications like chat or live updates. Unlike REST, which follows a request-response pattern, WebSockets establish a persistent connection between client and server, allowing for bi-directional, real-time communication. This makes them ideal for applications that need immediate updates without polling the server repeatedly.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="t-question-5" style="display: none;">
+                    <h3>Question 5:</h3>
+                    <p>What is the most common data format used in modern REST APIs?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q5" id="t-q5a" value="a">
+                            <label for="t-q5a">XML</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q5" id="t-q5b" value="b">
+                            <label for="t-q5b">JSON</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q5" id="t-q5c" value="c">
+                            <label for="t-q5c">HTML</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="t-q5" id="t-q5d" value="d">
+                            <label for="t-q5d">CSV</label>
+                        </div>
+                    </div>
+                    <div id="feedback-t-q5" class="quiz-feedback"></div>
+                    <div id="explanation-t-q5" class="explanation">
+                        JSON (JavaScript Object Notation) is the most common data format used in modern REST APIs. It's lightweight, easy for humans to read and write, easy for machines to parse and generate, and has excellent support in virtually all programming languages. While REST APIs can use other formats like XML, JSON has become the de facto standard due to its simplicity and efficiency.
+                    </div>
+                </div>
+                
+                <div id="t-next-button-container">
+                    <button onclick="checkTypesQuestion(1)">Check Answer</button>
+                </div>
+                
+                <div id="t-result" class="result"></div>
+                
+                <div id="t-certificate" class="certificate">
+                    <h2>Certificate of Completion</h2>
+                    <p>This certifies that</p>
+                    <p><strong id="t-certificate-name">Student Name</strong></p>
+                    <p>has successfully completed the</p>
+                    <p><strong>API Types Knowledge Check</strong></p>
+                    <p class="date" id="t-certificate-date"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="ai-apis" class="tab-content">
+        <div class="container">
+            <h2>AI APIs Quiz</h2>
+            <p>Test your understanding of AI-specific APIs and their capabilities.</p>
+            
+            <div class="progress-container">
+                <div id="progress-ai" class="progress-bar" style="width: 0%"></div>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" id="a-question-1">
+                    <h3>Question 1:</h3>
+                    <p>What is the primary function of OpenAI's GPT API?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q1" id="a-q1a" value="a">
+                            <label for="a-q1a">Image generation</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q1" id="a-q1b" value="b">
+                            <label for="a-q1b">Text generation and completion</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q1" id="a-q1c" value="c">
+                            <label for="a-q1c">Speech recognition</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q1" id="a-q1d" value="d">
+                            <label for="a-q1d">Video analysis</label>
+                        </div>
+                    </div>
+                    <div id="feedback-a-q1" class="quiz-feedback"></div>
+                    <div id="explanation-a-q1" class="explanation">
+                        The primary function of OpenAI's GPT (Generative Pre-trained Transformer) API is text generation and completion. It can generate human-like text based on the input it receives, complete partial text, answer questions, write content, summarize information, and perform various other text-based tasks. While OpenAI does offer other APIs for image generation (DALL-E) and speech (Whisper), the GPT models are specifically designed for text.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="a-question-2" style="display: none;">
+                    <h3>Question 2:</h3>
+                    <p>Which parameter in LLM APIs controls the randomness of the generated text?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q2" id="a-q2a" value="a">
+                            <label for="a-q2a">max_tokens</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q2" id="a-q2b" value="b">
+                            <label for="a-q2b">temperature</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q2" id="a-q2c" value="c">
+                            <label for="a-q2c">top_p</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q2" id="a-q2d" value="d">
+                            <label for="a-q2d">frequency_penalty</label>
+                        </div>
+                    </div>
+                    <div id="feedback-a-q2" class="quiz-feedback"></div>
+                    <div id="explanation-a-q2" class="explanation">
+                        The "temperature" parameter in LLM (Large Language Model) APIs controls the randomness of the generated text. A lower temperature (closer to 0) makes the output more deterministic and focused, while a higher temperature (closer to 1 or above) makes the output more random and creative. When you need consistent, predictable responses, use a lower temperature; when you want more varied and creative responses, use a higher temperature.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="a-question-3" style="display: none;">
+                    <h3>Question 3:</h3>
+                    <p>What is an embedding in the context of AI APIs?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q3" id="a-q3a" value="a">
+                            <label for="a-q3a">A way to insert images into text</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q3" id="a-q3b" value="b">
+                            <label for="a-q3b">A numerical representation of text that captures semantic meaning</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q3" id="a-q3c" value="c">
+                            <label for="a-q3c">A method for embedding one API inside another</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q3" id="a-q3d" value="d">
+                            <label for="a-q3d">A technique for compressing API responses</label>
+                        </div>
+                    </div>
+                    <div id="feedback-a-q3" class="quiz-feedback"></div>
+                    <div id="explanation-a-q3" class="explanation">
+                        In the context of AI APIs, an embedding is a numerical representation of text that captures semantic meaning. Embeddings convert words, phrases, or documents into vectors (lists of numbers) in a high-dimensional space, where similar concepts are positioned close together. These vector representations allow computers to understand relationships between words and concepts, enabling semantic search, recommendations, clustering, and other applications that require understanding the meaning of text.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="a-question-4" style="display: none;">
+                    <h3>Question 4:</h3>
+                    <p>Which of the following is NOT a common use case for AI APIs?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q4" id="a-q4a" value="a">
+                            <label for="a-q4a">Content generation</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q4" id="a-q4b" value="b">
+                            <label for="a-q4b">Sentiment analysis</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q4" id="a-q4c" value="c">
+                            <label for="a-q4c">Physical hardware control</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q4" id="a-q4d" value="d">
+                            <label for="a-q4d">Language translation</label>
+                        </div>
+                    </div>
+                    <div id="feedback-a-q4" class="quiz-feedback"></div>
+                    <div id="explanation-a-q4" class="explanation">
+                        Physical hardware control is NOT a common use case for AI APIs. While AI can be used in systems that control hardware (like robotics or IoT devices), the APIs themselves typically don't directly control physical hardware. Common use cases for AI APIs include content generation, sentiment analysis, language translation, image recognition, text summarization, and other data processing tasks that involve understanding or generating content.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="a-question-5" style="display: none;">
+                    <h3>Question 5:</h3>
+                    <p>What is a key difference between Google's Gemini API and OpenAI's GPT API?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q5" id="a-q5a" value="a">
+                            <label for="a-q5a">Only Gemini can process images along with text</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q5" id="a-q5b" value="b">
+                            <label for="a-q5b">Only GPT can generate code</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q5" id="a-q5c" value="c">
+                            <label for="a-q5c">Gemini only works with Google products</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="a-q5" id="a-q5d" value="d">
+                            <label for="a-q5d">GPT can only process English text</label>
+                        </div>
+                    </div>
+                    <div id="feedback-a-q5" class="quiz-feedback"></div>
+                    <div id="explanation-a-q5" class="explanation">
+                        While both APIs have multimodal capabilities in their latest versions, historically a key difference was that Gemini was designed as a multimodal model from the ground up, capable of processing images along with text in a more integrated way. However, this distinction has narrowed as OpenAI has introduced multimodal capabilities to GPT-4 (GPT-4V and GPT-4o). Both APIs can generate code, work with various products and services (not just their parent companies'), and process multiple languages.
+                    </div>
+                </div>
+                
+                <div id="a-next-button-container">
+                    <button onclick="checkAIQuestion(1)">Check Answer</button>
+                </div>
+                
+                <div id="a-result" class="result"></div>
+                
+                <div id="a-certificate" class="certificate">
+                    <h2>Certificate of Completion</h2>
+                    <p>This certifies that</p>
+                    <p><strong id="a-certificate-name">Student Name</strong></p>
+                    <p>has successfully completed the</p>
+                    <p><strong>AI APIs Knowledge Check</strong></p>
+                    <p class="date" id="a-certificate-date"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="vector-stores" class="tab-content">
+        <div class="container">
+            <h2>Vector Stores Quiz</h2>
+            <p>Test your understanding of vector stores and document processing.</p>
+            
+            <div class="progress-container">
+                <div id="progress-vector" class="progress-bar" style="width: 0%"></div>
+            </div>
+            
+            <div class="quiz-container">
+                <div class="quiz-question" id="v-question-1">
+                    <h3>Question 1:</h3>
+                    <p>What is a vector embedding in the context of AI and vector stores?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q1" id="v-q1a" value="a">
+                            <label for="v-q1a">A way to compress documents to save storage space</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q1" id="v-q1b" value="b">
+                            <label for="v-q1b">A numerical representation of text that captures semantic meaning</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q1" id="v-q1c" value="c">
+                            <label for="v-q1c">A method for embedding images within text documents</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q1" id="v-q1d" value="d">
+                            <label for="v-q1d">A type of database that stores vectors instead of tables</label>
+                        </div>
+                    </div>
+                    <div id="feedback-v-q1" class="quiz-feedback"></div>
+                    <div id="explanation-v-q1" class="explanation">
+                        A vector embedding is a numerical representation of text (or other content) that captures semantic meaning. It converts words, phrases, or documents into vectors (lists of numbers) in a high-dimensional space, where similar concepts are positioned close together. This allows computers to understand relationships between words and concepts based on their meaning rather than just exact matches.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="v-question-2" style="display: none;">
+                    <h3>Question 2:</h3>
+                    <p>What is the primary purpose of a vector store?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q2" id="v-q2a" value="a">
+                            <label for="v-q2a">To store and retrieve vectors based on similarity</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q2" id="v-q2b" value="b">
+                            <label for="v-q2b">To convert text to images</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q2" id="v-q2c" value="c">
+                            <label for="v-q2c">To compress data for efficient storage</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q2" id="v-q2d" value="d">
+                            <label for="v-q2d">To encrypt sensitive information</label>
+                        </div>
+                    </div>
+                    <div id="feedback-v-q2" class="quiz-feedback"></div>
+                    <div id="explanation-v-q2" class="explanation">
+                        The primary purpose of a vector store is to store and retrieve vectors based on similarity. Vector stores are specialized databases optimized for similarity search, allowing you to find documents or content that are semantically similar to a query, even if they don't share the exact same words. This enables semantic search, recommendations, and other applications that require understanding the meaning of content.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="v-question-3" style="display: none;">
+                    <h3>Question 3:</h3>
+                    <p>What is "chunking" in the context of document vectorization?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q3" id="v-q3a" value="a">
+                            <label for="v-q3a">Compressing documents to reduce file size</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q3" id="v-q3b" value="b">
+                            <label for="v-q3b">Breaking documents into smaller pieces for processing</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q3" id="v-q3c" value="c">
+                            <label for="v-q3c">Grouping similar documents together</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q3" id="v-q3d" value="d">
+                            <label for="v-q3d">Converting text to binary format</label>
+                        </div>
+                    </div>
+                    <div id="feedback-v-q3" class="quiz-feedback"></div>
+                    <div id="explanation-v-q3" class="explanation">
+                        In the context of document vectorization, "chunking" refers to breaking documents into smaller pieces for processing. This is necessary because embedding models often have input size limits, and smaller chunks allow for more precise retrieval. Chunking helps focus on relevant parts of large documents and makes it easier to find specific information within them.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="v-question-4" style="display: none;">
+                    <h3>Question 4:</h3>
+                    <p>What metric is commonly used to measure similarity between vectors in a vector store?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q4" id="v-q4a" value="a">
+                            <label for="v-q4a">Euclidean distance</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q4" id="v-q4b" value="b">
+                            <label for="v-q4b">Manhattan distance</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q4" id="v-q4c" value="c">
+                            <label for="v-q4c">Cosine similarity</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q4" id="v-q4d" value="d">
+                            <label for="v-q4d">Hamming distance</label>
+                        </div>
+                    </div>
+                    <div id="feedback-v-q4" class="quiz-feedback"></div>
+                    <div id="explanation-v-q4" class="explanation">
+                        Cosine similarity is commonly used to measure similarity between vectors in a vector store. It measures the cosine of the angle between two vectors, providing a value between -1 and 1, where 1 means the vectors are identical, 0 means they are orthogonal (unrelated), and -1 means they are opposite. Cosine similarity is particularly useful for text embeddings because it focuses on the direction of vectors rather than their magnitude, making it less sensitive to document length.
+                    </div>
+                </div>
+                
+                <div class="quiz-question" id="v-question-5" style="display: none;">
+                    <h3>Question 5:</h3>
+                    <p>Which of the following is NOT a common application of vector stores?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q5" id="v-q5a" value="a">
+                            <label for="v-q5a">Semantic search</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q5" id="v-q5b" value="b">
+                            <label for="v-q5b">Recommendation systems</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q5" id="v-q5c" value="c">
+                            <label for="v-q5c">Data encryption</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="v-q5" id="v-q5d" value="d">
+                            <label for="v-q5d">Knowledge retrieval for AI assistants</label>
+                        </div>
+                    </div>
+                    <div id="feedback-v-q5" class="quiz-feedback"></div>
+                    <div id="explanation-v-q5" class="explanation">
+                        Data encryption is NOT a common application of vector stores. Vector stores are primarily used for semantic search (finding content based on meaning rather than exact matches), recommendation systems (suggesting similar items), knowledge retrieval for AI assistants (providing relevant information to ground AI responses), document clustering, and other applications that require understanding relationships between content based on meaning.
+                    </div>
+                </div>
+                
+                <div id="v-next-button-container">
+                    <button onclick="checkVectorQuestion(1)">Check Answer</button>
+                </div>
+                
+                <div id="v-result" class="result"></div>
+                
+                <div id="v-certificate" class="certificate">
+                    <h2>Certificate of Completion</h2>
+                    <p>This certifies that</p>
+                    <p><strong id="v-certificate-name">Student Name</strong></p>
+                    <p>has successfully completed the</p>
+                    <p><strong>Vector Stores Knowledge Check</strong></p>
+                    <p class="date" id="v-certificate-date"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Show the selected tab
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Deactivate all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show the selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate the clicked tab
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Correct answers
+        const correctAnswers = {
+            fundamentals: {
+                q1: 'a',
+                q2: 'b',
+                q3: 'c',
+                q4: 'a',
+                q5: 'd'
+            },
+            types: {
+                q1: 'b',
+                q2: 'b',
+                q3: 'c',
+                q4: 'b',
+                q5: 'b'
+            },
+            ai: {
+                q1: 'b',
+                q2: 'b',
+                q3: 'b',
+                q4: 'c',
+                q5: 'a'
+            },
+            vector: {
+                q1: 'b',
+                q2: 'a',
+                q3: 'b',
+                q4: 'c',
+                q5: 'c'
+            }
+        };
+        
+        // Track progress
+        const progress = {
+            fundamentals: { current: 1, total: 5, score: 0 },
+            types: { current: 1, total: 5, score: 0 },
+            ai: { current: 1, total: 5, score: 0 },
+            vector: { current: 1, total: 5, score: 0 }
+        };
+        
+        // Check fundamentals questions
+        function checkFundamentalsQuestion(questionNumber) {
+            const selectedOption = document.querySelector(`input[name="f-q${questionNumber}"]:checked`);
+            const feedbackElement = document.getElementById(`feedback-f-q${questionNumber}`);
+            const explanationElement = document.getElementById(`explanation-f-q${questionNumber}`);
+            
+            if (!selectedOption) {
+                feedbackElement.textContent = "Please select an answer.";
+                feedbackElement.className = "quiz-feedback incorrect";
+                feedbackElement.style.display = 'block';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswers.fundamentals[`q${questionNumber}`]) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = "quiz-feedback correct";
+                progress.fundamentals.score++;
+            } else {
+                feedbackElement.textContent = "Incorrect. Try again or see the explanation.";
+                feedbackElement.className = "quiz-feedback incorrect";
+            }
+            
+            feedbackElement.style.display = 'block';
+            explanationElement.style.display = 'block';
+            
+            // Update button to move to next question or show results
+            const buttonContainer = document.getElementById('f-next-button-container');
+            
+            if (questionNumber < progress.fundamentals.total) {
+                buttonContainer.innerHTML = `<button onclick="moveToNextFundamentalsQuestion(${questionNumber})">Next Question</button>`;
+            } else {
+                buttonContainer.innerHTML = `<button onclick="showFundamentalsResults()">See Results</button>`;
+            }
+        }
+        
+        // Move to next fundamentals question
+        function moveToNextFundamentalsQuestion(currentQuestion) {
+            // Hide current question
+            document.getElementById(`f-question-${currentQuestion}`).style.display = 'none';
+            
+            // Show next question
+            const nextQuestion = currentQuestion + 1;
+            document.getElementById(`f-question-${nextQuestion}`).style.display = 'block';
+            
+            // Update progress
+            progress.fundamentals.current = nextQuestion;
+            updateProgressBar('fundamentals');
+            
+            // Update button
+            const buttonContainer = document.getElementById('f-next-button-container');
+            buttonContainer.innerHTML = `<button onclick="checkFundamentalsQuestion(${nextQuestion})">Check Answer</button>`;
+        }
+        
+        // Show fundamentals results
+        function showFundamentalsResults() {
+            const resultElement = document.getElementById('f-result');
+            const score = progress.fundamentals.score;
+            const total = progress.fundamentals.total;
+            const percentage = (score / total) * 100;
+            
+            resultElement.innerHTML = `<h3>Your Score: ${score}/${total} (${percentage}%)</h3>`;
+            
+            if (percentage >= 80) {
+                resultElement.innerHTML += `<p>Excellent! You have a solid understanding of API fundamentals.</p>`;
+                showCertificate('fundamentals');
+            } else if (percentage >= 60) {
+                resultElement.innerHTML += `<p>Good job! You understand the basics of APIs, but there's still more to learn.</p>`;
+            } else {
+                resultElement.innerHTML += `<p>You might want to review the material again to strengthen your understanding of API fundamentals.</p>`;
+            }
+            
+            resultElement.style.display = 'block';
+        }
+        
+        // Check types questions
+        function checkTypesQuestion(questionNumber) {
+            const selectedOption = document.querySelector(`input[name="t-q${questionNumber}"]:checked`);
+            const feedbackElement = document.getElementById(`feedback-t-q${questionNumber}`);
+            const explanationElement = document.getElementById(`explanation-t-q${questionNumber}`);
+            
+            if (!selectedOption) {
+                feedbackElement.textContent = "Please select an answer.";
+                feedbackElement.className = "quiz-feedback incorrect";
+                feedbackElement.style.display = 'block';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswers.types[`q${questionNumber}`]) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = "quiz-feedback correct";
+                progress.types.score++;
+            } else {
+                feedbackElement.textContent = "Incorrect. Try again or see the explanation.";
+                feedbackElement.className = "quiz-feedback incorrect";
+            }
+            
+            feedbackElement.style.display = 'block';
+            explanationElement.style.display = 'block';
+            
+            // Update button to move to next question or show results
+            const buttonContainer = document.getElementById('t-next-button-container');
+            
+            if (questionNumber < progress.types.total) {
+                buttonContainer.innerHTML = `<button onclick="moveToNextTypesQuestion(${questionNumber})">Next Question</button>`;
+            } else {
+                buttonContainer.innerHTML = `<button onclick="showTypesResults()">See Results</button>`;
+            }
+        }
+        
+        // Move to next types question
+        function moveToNextTypesQuestion(currentQuestion) {
+            // Hide current question
+            document.getElementById(`t-question-${currentQuestion}`).style.display = 'none';
+            
+            // Show next question
+            const nextQuestion = currentQuestion + 1;
+            document.getElementById(`t-question-${nextQuestion}`).style.display = 'block';
+            
+            // Update progress
+            progress.types.current = nextQuestion;
+            updateProgressBar('types');
+            
+            // Update button
+            const buttonContainer = document.getElementById('t-next-button-container');
+            buttonContainer.innerHTML = `<button onclick="checkTypesQuestion(${nextQuestion})">Check Answer</button>`;
+        }
+        
+        // Show types results
+        function showTypesResults() {
+            const resultElement = document.getElementById('t-result');
+            const score = progress.types.score;
+            const total = progress.types.total;
+            const percentage = (score / total) * 100;
+            
+            resultElement.innerHTML = `<h3>Your Score: ${score}/${total} (${percentage}%)</h3>`;
+            
+            if (percentage >= 80) {
+                resultElement.innerHTML += `<p>Excellent! You have a solid understanding of different API types.</p>`;
+                showCertificate('types');
+            } else if (percentage >= 60) {
+                resultElement.innerHTML += `<p>Good job! You understand the basics of API types, but there's still more to learn.</p>`;
+            } else {
+                resultElement.innerHTML += `<p>You might want to review the material again to strengthen your understanding of API types.</p>`;
+            }
+            
+            resultElement.style.display = 'block';
+        }
+        
+        // Check AI questions
+        function checkAIQuestion(questionNumber) {
+            const selectedOption = document.querySelector(`input[name="a-q${questionNumber}"]:checked`);
+            const feedbackElement = document.getElementById(`feedback-a-q${questionNumber}`);
+            const explanationElement = document.getElementById(`explanation-a-q${questionNumber}`);
+            
+            if (!selectedOption) {
+                feedbackElement.textContent = "Please select an answer.";
+                feedbackElement.className = "quiz-feedback incorrect";
+                feedbackElement.style.display = 'block';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswers.ai[`q${questionNumber}`]) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = "quiz-feedback correct";
+                progress.ai.score++;
+            } else {
+                feedbackElement.textContent = "Incorrect. Try again or see the explanation.";
+                feedbackElement.className = "quiz-feedback incorrect";
+            }
+            
+            feedbackElement.style.display = 'block';
+            explanationElement.style.display = 'block';
+            
+            // Update button to move to next question or show results
+            const buttonContainer = document.getElementById('a-next-button-container');
+            
+            if (questionNumber < progress.ai.total) {
+                buttonContainer.innerHTML = `<button onclick="moveToNextAIQuestion(${questionNumber})">Next Question</button>`;
+            } else {
+                buttonContainer.innerHTML = `<button onclick="showAIResults()">See Results</button>`;
+            }
+        }
+        
+        // Move to next AI question
+        function moveToNextAIQuestion(currentQuestion) {
+            // Hide current question
+            document.getElementById(`a-question-${currentQuestion}`).style.display = 'none';
+            
+            // Show next question
+            const nextQuestion = currentQuestion + 1;
+            document.getElementById(`a-question-${nextQuestion}`).style.display = 'block';
+            
+            // Update progress
+            progress.ai.current = nextQuestion;
+            updateProgressBar('ai');
+            
+            // Update button
+            const buttonContainer = document.getElementById('a-next-button-container');
+            buttonContainer.innerHTML = `<button onclick="checkAIQuestion(${nextQuestion})">Check Answer</button>`;
+        }
+        
+        // Show AI results
+        function showAIResults() {
+            const resultElement = document.getElementById('a-result');
+            const score = progress.ai.score;
+            const total = progress.ai.total;
+            const percentage = (score / total) * 100;
+            
+            resultElement.innerHTML = `<h3>Your Score: ${score}/${total} (${percentage}%)</h3>`;
+            
+            if (percentage >= 80) {
+                resultElement.innerHTML += `<p>Excellent! You have a solid understanding of AI APIs.</p>`;
+                showCertificate('ai');
+            } else if (percentage >= 60) {
+                resultElement.innerHTML += `<p>Good job! You understand the basics of AI APIs, but there's still more to learn.</p>`;
+            } else {
+                resultElement.innerHTML += `<p>You might want to review the material again to strengthen your understanding of AI APIs.</p>`;
+            }
+            
+            resultElement.style.display = 'block';
+        }
+        
+        // Check vector questions
+        function checkVectorQuestion(questionNumber) {
+            const selectedOption = document.querySelector(`input[name="v-q${questionNumber}"]:checked`);
+            const feedbackElement = document.getElementById(`feedback-v-q${questionNumber}`);
+            const explanationElement = document.getElementById(`explanation-v-q${questionNumber}`);
+            
+            if (!selectedOption) {
+                feedbackElement.textContent = "Please select an answer.";
+                feedbackElement.className = "quiz-feedback incorrect";
+                feedbackElement.style.display = 'block';
+                return;
+            }
+            
+            if (selectedOption.value === correctAnswers.vector[`q${questionNumber}`]) {
+                feedbackElement.textContent = "Correct!";
+                feedbackElement.className = "quiz-feedback correct";
+                progress.vector.score++;
+            } else {
+                feedbackElement.textContent = "Incorrect. Try again or see the explanation.";
+                feedbackElement.className = "quiz-feedback incorrect";
+            }
+            
+            feedbackElement.style.display = 'block';
+            explanationElement.style.display = 'block';
+            
+            // Update button to move to next question or show results
+            const buttonContainer = document.getElementById('v-next-button-container');
+            
+            if (questionNumber < progress.vector.total) {
+                buttonContainer.innerHTML = `<button onclick="moveToNextVectorQuestion(${questionNumber})">Next Question</button>`;
+            } else {
+                buttonContainer.innerHTML = `<button onclick="showVectorResults()">See Results</button>`;
+            }
+        }
+        
+        // Move to next vector question
+        function moveToNextVectorQuestion(currentQuestion) {
+            // Hide current question
+            document.getElementById(`v-question-${currentQuestion}`).style.display = 'none';
+            
+            // Show next question
+            const nextQuestion = currentQuestion + 1;
+            document.getElementById(`v-question-${nextQuestion}`).style.display = 'block';
+            
+            // Update progress
+            progress.vector.current = nextQuestion;
+            updateProgressBar('vector');
+            
+            // Update button
+            const buttonContainer = document.getElementById('v-next-button-container');
+            buttonContainer.innerHTML = `<button onclick="checkVectorQuestion(${nextQuestion})">Check Answer</button>`;
+        }
+        
+        // Show vector results
+        function showVectorResults() {
+            const resultElement = document.getElementById('v-result');
+            const score = progress.vector.score;
+            const total = progress.vector.total;
+            const percentage = (score / total) * 100;
+            
+            resultElement.innerHTML = `<h3>Your Score: ${score}/${total} (${percentage}%)</h3>`;
+            
+            if (percentage >= 80) {
+                resultElement.innerHTML += `<p>Excellent! You have a solid understanding of vector stores.</p>`;
+                showCertificate('vector');
+            } else if (percentage >= 60) {
+                resultElement.innerHTML += `<p>Good job! You understand the basics of vector stores, but there's still more to learn.</p>`;
+            } else {
+                resultElement.innerHTML += `<p>You might want to review the material again to strengthen your understanding of vector stores.</p>`;
+            }
+            
+            resultElement.style.display = 'block';
+        }
+        
+        // Update progress bar
+        function updateProgressBar(quizType) {
+            const progressBar = document.getElementById(`progress-${quizType}`);
+            const percentage = (progress[quizType].current / progress[quizType].total) * 100;
+            progressBar.style.width = `${percentage}%`;
+        }
+        
+        // Show certificate
+        function showCertificate(quizType) {
+            const certificate = document.getElementById(`${quizType.charAt(0)}-certificate`);
+            const nameElement = document.getElementById(`${quizType.charAt(0)}-certificate-name`);
+            const dateElement = document.getElementById(`${quizType.charAt(0)}-certificate-date`);
+            
+            // Set student name (in a real app, this would come from user profile)
+            nameElement.textContent = "API Course Student";
+            
+            // Set current date
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('en-US', options);
+            
+            // Show certificate
+            certificate.style.display = 'block';
+        }
+        
+        // Initialize progress bars
+        updateProgressBar('fundamentals');
+        updateProgressBar('types');
+        updateProgressBar('ai');
+        updateProgressBar('vector');
+    </script>
+</body>
+</html>

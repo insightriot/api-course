@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Authentication Methods Interactive Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .code-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        
+        .visual-diagram {
+            background-color: #f0f7ff;
+            border: 1px solid #c5d9f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .diagram-element {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+        }
+        
+        .diagram-arrow {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 24px;
+            color: #3498db;
+        }
+        
+        .quiz-container {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 20px;
+        }
+        
+        .quiz-options {
+            margin-left: 20px;
+        }
+        
+        .quiz-option {
+            margin-bottom: 10px;
+        }
+        
+        .quiz-feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .interactive-demo {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f9ff;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .security-level {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .security-meter {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .security-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .low {
+            background-color: #e74c3c;
+            width: 20%;
+        }
+        
+        .medium {
+            background-color: #f39c12;
+            width: 50%;
+        }
+        
+        .high {
+            background-color: #2ecc71;
+            width: 80%;
+        }
+        
+        .very-high {
+            background-color: #27ae60;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Authentication Methods</h1>
+    <p>This interactive guide will help you understand different API authentication methods, their security levels, and how to implement them in your applications.</p>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('overview')">Overview</div>
+        <div class="tab" onclick="showTab('api-keys')">API Keys</div>
+        <div class="tab" onclick="showTab('oauth')">OAuth</div>
+        <div class="tab" onclick="showTab('jwt')">JWT</div>
+        <div class="tab" onclick="showTab('quiz')">Knowledge Check</div>
+    </div>
+    
+    <div id="overview" class="tab-content active">
+        <div class="container">
+            <h2>Authentication Methods Comparison</h2>
+            <p>API authentication ensures that only authorized users or applications can access your API. Different methods offer varying levels of security and complexity.</p>
+            
+            <h3>Security Levels of Different Authentication Methods</h3>
+            
+            <div class="security-level">
+                <div style="width: 150px;">No Authentication</div>
+                <div class="security-meter">
+                    <div class="security-fill" style="width: 0%; background-color: #e74c3c;"></div>
+                </div>
+                <div>Not Secure</div>
+            </div>
+            
+            <div class="security-level">
+                <div style="width: 150px;">API Key in URL</div>
+                <div class="security-meter">
+                    <div class="security-fill low"></div>
+                </div>
+                <div>Low Security</div>
+            </div>
+            
+            <div class="security-level">
+                <div style="width: 150px;">API Key in Header</div>
+                <div class="security-meter">
+                    <div class="security-fill medium"></div>
+                </div>
+                <div>Medium Security</div>
+            </div>
+            
+            <div class="security-level">
+                <div style="width: 150px;">OAuth 2.0</div>
+                <div class="security-meter">
+                    <div class="security-fill high"></div>
+                </div>
+                <div>High Security</div>
+            </div>
+            
+            <div class="security-level">
+                <div style="width: 150px;">JWT with HTTPS</div>
+                <div class="security-meter">
+                    <div class="security-fill very-high"></div>
+                </div>
+                <div>Very High Security</div>
+            </div>
+            
+            <h3>Choosing the Right Authentication Method</h3>
+            <p>Consider these factors when selecting an authentication method:</p>
+            <ul>
+                <li><strong>Security requirements</strong>: How sensitive is the data being accessed?</li>
+                <li><strong>User experience</strong>: Will users need to log in directly?</li>
+                <li><strong>Implementation complexity</strong>: How much development effort can you invest?</li>
+                <li><strong>Type of application</strong>: Is it a server-to-server API or a user-facing application?</li>
+            </ul>
+            
+            <div class="visual-diagram">
+                <h3>Authentication Methods Overview</h3>
+                <div class="diagram-element">
+                    <strong>API Keys</strong>
+                    <p>Simple string tokens</p>
+                    <p>Best for: Server-to-server</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>OAuth 2.0</strong>
+                    <p>Token-based delegation</p>
+                    <p>Best for: User authorization</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>JWT</strong>
+                    <p>Self-contained tokens</p>
+                    <p>Best for: Stateless auth</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="api-keys" class="tab-content">
+        <div class="container">
+            <h2>API Keys</h2>
+            <p>API keys are simple string tokens that identify and authenticate an application or user making API requests.</p>
+            
+            <div class="visual-diagram">
+                <h3>How API Keys Work</h3>
+                <div class="diagram-element">
+                    <strong>Your Application</strong>
+                    <p>Includes API key in request</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>API Server</strong>
+                    <p>Validates key</p>
+                    <p>Checks permissions</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>Response</strong>
+                    <p>Returns data if authorized</p>
+                </div>
+            </div>
+            
+            <h3>API Key Best Practices</h3>
+            <ul>
+                <li><strong>Never expose in client-side code</strong> (JavaScript, mobile apps)</li>
+                <li><strong>Store securely</strong> using environment variables or secure vaults</li>
+                <li><strong>Transmit only over HTTPS</strong> to prevent interception</li>
+                <li><strong>Implement rate limiting</strong> to prevent abuse</li>
+                <li><strong>Rotate keys periodically</strong> for enhanced security</li>
+            </ul>
+            
+            <h3>Where to Include API Keys</h3>
+            <p>API keys can be included in different parts of a request:</p>
+            
+            <div class="code-block">
+# 1. In the request header (most secure)
+headers = {
+    "Authorization": "Bearer sk_test_51NzUBtLkdIwIJCDv7fE8VT2PxZL..."
+}
+
+# 2. As a query parameter (less secure)
+url = "https://api.example.com/data?api_key=sk_test_51NzUBtLkdIwIJCDv7fE8VT2PxZL..."
+
+# 3. In the request body (for POST requests)
+data = {
+    "api_key": "sk_test_51NzUBtLkdIwIJCDv7fE8VT2PxZL...",
+    "param1": "value1"
+}</div>
+            
+            <h3>Python Example: Secure API Key Handling</h3>
+            
+            <div class="code-block">
+import os
+from dotenv import load_dotenv
+import requests
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable (not hardcoded!)
+api_key = os.getenv("OPENAI_API_KEY")
+
+# Use the API key in a request
+headers = {
+    "Authorization": f"Bearer {api_key}",
+    "Content-Type": "application/json"
+}
+
+response = requests.get(
+    "https://api.example.com/data",
+    headers=headers
+)
+
+print(response.json())</div>
+            
+            <div class="interactive-demo">
+                <h3>Interactive API Key Demo</h3>
+                <p>See how different ways of including an API key affect security:</p>
+                
+                <div class="form-group">
+                    <label for="api-key-method">Select method:</label>
+                    <select id="api-key-method" onchange="updateApiKeySecurity()">
+                        <option value="header">Authorization Header</option>
+                        <option value="query">Query Parameter</option>
+                        <option value="body">Request Body</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="api-key-storage">Select storage method:</label>
+                    <select id="api-key-storage" onchange="updateApiKeySecurity()">
+                        <option value="env">Environment Variable</option>
+                        <option value="config">Configuration File</option>
+                        <option value="hardcoded">Hardcoded in Source Code</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="api-key-transport">Select transport security:</label>
+                    <select id="api-key-transport" onchange="updateApiKeySecurity()">
+                        <option value="https">HTTPS</option>
+                        <option value="http">HTTP (unencrypted)</option>
+                    </select>
+                </div>
+                
+                <div class="security-level">
+                    <div style="width: 150px;">Overall Security:</div>
+                    <div class="security-meter">
+                        <div id="api-key-security" class="security-fill high"></div>
+                    </div>
+                    <div id="api-key-security-label">High Security</div>
+                </div>
+                
+                <div id="api-key-recommendation" class="result" style="display: block;">
+                    <strong>Recommendation:</strong> Using API keys in the Authorization header, stored in environment variables, and transmitted over HTTPS provides good security for most applications.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="oauth" class="tab-content">
+        <div class="container">
+            <h2>OAuth 2.0</h2>
+            <p>OAuth 2.0 is an authorization framework that enables third-party applications to obtain limited access to a user's account on a server.</p>
+            
+            <div class="visual-diagram">
+                <h3>OAuth 2.0 Flow (Simplified)</h3>
+                <div class="diagram-element">
+                    <strong>User</strong>
+                    <p>Wants to give App access to their data</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>App</strong>
+                    <p>Redirects to Service</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>Service</strong>
+                    <p>User logs in</p>
+                    <p>Approves permissions</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>App</strong>
+                    <p>Receives access token</p>
+                </div>
+                <div class="diagram-arrow">→</div>
+                <div class="diagram-element">
+                    <strong>API</strong>
+                    <p>Accepts token</p>
+                    <p>Returns data</p>
+                </div>
+            </div>
+            
+            <h3>Real-World Example: "Sign in with Google"</h3>
+            <p>When you click "Sign in with Google" on a website:</p>
+            <ol>
+                <li>The website redirects you to Google's authentication page</li>
+                <li>You log in to Google (if not already logged in)</li>
+                <li>Google asks if you want to grant the website access to specific information</li>
+                <li>If you approve, Google gives the website an access token</li>
+                <li>The website uses this token to access the approved information</li>
+            </ol>
+            
+            <h3>OAuth 2.0 Grant Types</h3>
+            <ul>
+                <li><strong>Authorization Code</strong>: Most secure, used for server-side applications</li>
+                <li><strong>Implicit</strong>: Simplified flow for browser-based applications</li>
+                <li><strong>Resource Owner Password Credentials</strong>: For trusted applications</li>
+                <li><strong>Client Credentials</strong>: For server-to-server authentication</li>
+            </ul>
+            
+            <h3>Python Example: OAuth 2.0 Client</h3>
+            
+            <div class="code-block">
+import os
+from requests_oauthlib import OAuth2Session
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# OAuth settings
+client_id = os.getenv("OAUTH_CLIENT_ID")
+client_secret = os.getenv("OAUTH_CLIENT_SECRET")
+authorization_base_url = "https://accounts.google.com/o/oauth2/auth"
+token_url = "https://accounts.google.com/o/oauth2/token"
+scope = ["https://www.googleapis.com/auth/userinfo.email", 
+         "https://www.googleapis.com/auth/userinfo.profile"]
+redirect_uri = "http://localhost:8080/callback"
+
+# Create OAuth session
+oauth = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
+
+# Get authorization URL
+authorization_url, state = oauth.authorization_url(authorization_base_url)
+
+# Redirect user to authorization URL
+print(f"Please go to {authorization_url} and authorize the app")
+
+# Get the authorization code from the callback
+redirect_response = input("Enter the full callback URL: ")
+
+# Fetch the access token
+token = oauth.fetch_token(
+    token_url,
+    client_secret=client_secret,
+    authorization_response=redirect_response
+)
+
+# Use the access token to access protected resources
+response = oauth.get("https://www.googleapis.com/oauth2/v1/userinfo")
+print(response.json())</div>
+            
+            <div class="interactive-demo">
+                <h3>Interactive OAuth Demo</h3>
+                <p>Explore how different OAuth grant types are used in different scenarios:</p>
+                
+                <div class="form-group">
+                    <label for="oauth-app-type">Application Type:</label>
+                    <select id="oauth-app-type" onchange="updateOAuthRecommendation()">
+                        <option value="web">Web Application (with backend)</option>
+                        <option value="spa">Single Page Application (JavaScript only)</option>
+                        <option value="mobile">Mobile App</option>
+                        <option value="server">Server-to-Server</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="oauth-data-sensitivity">Data Sensitivity:</label>
+                    <select id="oauth-data-sensitivity" onchange="updateOAuthRecommendation()">
+                        <option value="low">Low (public data)</option>
+                        <option value="medium">Medium (personal data)</option>
+                        <option value="high">High (financial/health data)</option>
+                    </select>
+                </div>
+                
+                <div id="oauth-recommendation" class="result" style="display: block;">
+                    <strong>Recommended Grant Type:</strong> Authorization Code
+                    <p>For web applications with backends, the Authorization Code grant provides the highest security. The client secret can be securely stored on your server, and the authorization code exchange happens server-side.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="jwt" class="tab-content">
+        <div class="container">
+            <h2>JSON Web Tokens (JWT)</h2>
+            <p>JWT is an open standard for securely transmitting information between parties as a JSON object. It's commonly used for authentication and information exchange.</p>
+            
+            <div class="visual-diagram">
+                <h3>JWT Structure</h3>
+                <div class="diagram-element" style="background-color: #e74c3c; color: white;">
+                    <strong>Header</strong>
+                    <p>Token type & algorithm</p>
+                </div>
+                <div class="diagram-arrow">.</div>
+                <div class="diagram-element" style="background-color: #3498db; color: white;">
+                    <strong>Payload</strong>
+                    <p>Claims & data</p>
+                </div>
+                <div class="diagram-arrow">.</div>
+                <div class="diagram-element" style="background-color: #2ecc71; color: white;">
+                    <strong>Signature</strong>
+                    <p>Verifies integrity</p>
+                </div>
+            </div>
+            
+            <h3>How JWTs Work</h3>
+            <ol>
+                <li>User logs in and receives a signed JWT</li>
+                <li>JWT contains encoded user information and expiration time</li>
+                <li>User includes JWT in subsequent requests</li>
+                <li>Server validates the JWT signature and checks if it's expired</li>
+                <li>If valid, the server processes the request</li>
+            </ol>
+            
+            <h3>JWT Advantages</h3>
+            <ul>
+                <li><strong>Stateless</strong>: No need to store session data on the server</li>
+                <li><strong>Portable</strong>: Can be used across different domains</li>
+                <li><strong>Self-contained</strong>: Contains all necessary user information</li>
+                <li><strong>Efficient</strong>: Reduces database lookups for authentication</li>
+            </ul>
+            
+            <h3>Python Example: Creating and Validating JWTs</h3>
+            
+            <div class="code-block">
+import jwt
+import datetime
+from dotenv import load_dotenv
+import os
+
+# Load environment variables
+load_dotenv()
+
+# Get secret key from environment variable
+secret_key = os.getenv("JWT_SECRET_KEY")
+
+# Create a JWT
+def create_jwt(user_id, username):
+    # Set expiration time (1 hour from now)
+    expiration = datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    
+    # Create payload
+    payload = {
+        "user_id": user_id,
+        "username": username,
+        "exp": expiration
+    }
+    
+    # Create the JWT
+    token = jwt.encode(payload, secret_key, algorithm="HS256")
+    
+    return token
+
+# Validate a JWT
+def validate_jwt(token):
+    try:
+        # Decode and validate the JWT
+        payload = jwt.decode(token, secret_key, algorithms=["HS256"])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return "Token has expired"
+    except jwt.InvalidTokenError:
+        return "Invalid token"
+
+# Example usage
+token = create_jwt(123, "example_user")
+print(f"JWT: {token}")
+
+# Later, when receiving a request with the JWT
+payload = validate_jwt(token)
+print(f"Decoded payload: {payload}")</div>
+            
+            <div class="interactive-demo">
+                <h3>Interactive JWT Demo</h3>
+                <p>See how JWT claims affect token behavior:</p>
+                
+                <div class="form-group">
+                    <label for="jwt-username">Username:</label>
+                    <input type="text" id="jwt-username" value="example_user">
+                </div>
+                
+                <div class="form-group">
+                    <label for="jwt-expiration">Token Expiration:</label>
+                    <select id="jwt-expiration">
+                        <option value="5m">5 minutes</option>
+                        <option value="1h" selected>1 hour</option>
+                        <option value="24h">24 hours</option>
+                        <option value="7d">7 days</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="jwt-claims">Additional Claims:</label>
+                    <select id="jwt-claims" multiple size="3">
+                        <option value="role">User Role</option>
+                        <option value="permissions">Permissions</option>
+                        <option value="email">Email Address</option>
+                    </select>
+                    <small>(Hold Ctrl/Cmd to select multiple)</small>
+                </div>
+                
+                <button onclick="generateJWT()">Generate JWT</button>
+                
+                <div id="jwt-result" class="result">
+                    <strong>JWT will appear here</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="quiz" class="tab-content">
+        <div class="container">
+            <h2>Knowledge Check</h2>
+            <p>Test your understanding of API authentication methods with this quiz.</p>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <h3>Question 1:</h3>
+                    <p>Which authentication method is best for a public-facing mobile app that needs to access user-specific data?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="q1" id="q1a" value="a">
+                            <label for="q1a">Hardcoded API key in the app code</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q1" id="q1b" value="b">
+                            <label for="q1b">Basic HTTP Authentication</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q1" id="q1c" value="c">
+                            <label for="q1c">OAuth 2.0</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q1" id="q1d" value="d">
+                            <label for="q1d">API key in query parameters</label>
+                        </div>
+                    </div>
+                    <div id="feedback-q1" class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 2:</h3>
+                    <p>What is the most secure way to store an API key in a Python application?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="q2" id="q2a" value="a">
+                            <label for="q2a">Directly in the source code</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q2" id="q2b" value="b">
+                            <label for="q2b">In a configuration file that's included in version control</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q2" id="q2c" value="c">
+                            <label for="q2c">In an environment variable or .env file (not in version control)</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q2" id="q2d" value="d">
+                            <label for="q2d">In a database accessible by the application</label>
+                        </div>
+                    </div>
+                    <div id="feedback-q2" class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 3:</h3>
+                    <p>Which statement about JWTs is FALSE?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="q3" id="q3a" value="a">
+                            <label for="q3a">JWTs can contain user information in the payload</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q3" id="q3b" value="b">
+                            <label for="q3b">JWTs are stateless and don't require server-side storage</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q3" id="q3c" value="c">
+                            <label for="q3c">JWTs can be revoked individually before they expire</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q3" id="q3d" value="d">
+                            <label for="q3d">JWTs have three parts: header, payload, and signature</label>
+                        </div>
+                    </div>
+                    <div id="feedback-q3" class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 4:</h3>
+                    <p>In OAuth 2.0, what is the purpose of the "scope" parameter?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="q4" id="q4a" value="a">
+                            <label for="q4a">To specify how long the token will be valid</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q4" id="q4b" value="b">
+                            <label for="q4b">To limit which servers can use the token</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q4" id="q4c" value="c">
+                            <label for="q4c">To specify which permissions or access levels are being requested</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q4" id="q4d" value="d">
+                            <label for="q4d">To identify which user is making the request</label>
+                        </div>
+                    </div>
+                    <div id="feedback-q4" class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <h3>Question 5:</h3>
+                    <p>What is a potential security risk when using API keys?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">
+                            <input type="radio" name="q5" id="q5a" value="a">
+                            <label for="q5a">They can be intercepted if sent over HTTP instead of HTTPS</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q5" id="q5b" value="b">
+                            <label for="q5b">They automatically expire after a short time</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q5" id="q5c" value="c">
+                            <label for="q5c">They require too much server processing power</label>
+                        </div>
+                        <div class="quiz-option">
+                            <input type="radio" name="q5" id="q5d" value="d">
+                            <label for="q5d">They can only be used once per session</label>
+                        </div>
+                    </div>
+                    <div id="feedback-q5" class="quiz-feedback"></div>
+                </div>
+                
+                <button onclick="checkQuiz()">Submit Answers</button>
+                <div id="quiz-result" class="result"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Show the selected tab
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Deactivate all tabs
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Show the selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate the clicked tab
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Update API Key security meter
+        function updateApiKeySecurity() {
+            const method = document.getElementById('api-key-method').value;
+            const storage = document.getElementById('api-key-storage').value;
+            const transport = document.getElementById('api-key-transport').value;
+            
+            let securityScore = 0;
+            
+            // Score based on method
+            if (method === 'header') securityScore += 3;
+            else if (method === 'body') securityScore += 2;
+            else if (method === 'query') securityScore += 1;
+            
+            // Score based on storage
+            if (storage === 'env') securityScore += 3;
+            else if (storage === 'config') securityScore += 2;
+            else if (storage === 'hardcoded') securityScore += 0;
+            
+            // Score based on transport
+            if (transport === 'https') securityScore += 3;
+            else if (transport === 'http') securityScore += 0;
+            
+            // Calculate percentage (max score is 9)
+            const percentage = (securityScore / 9) * 100;
+            
+            // Update security meter
+            const securityFill = document.getElementById('api-key-security');
+            securityFill.style.width = `${percentage}%`;
+            
+            // Update class based on score
+            securityFill.className = 'security-fill';
+            if (percentage <= 25) {
+                securityFill.classList.add('low');
+                document.getElementById('api-key-security-label').textContent = 'Low Security';
+            } else if (percentage <= 50) {
+                securityFill.classList.add('medium');
+                document.getElementById('api-key-security-label').textContent = 'Medium Security';
+            } else if (percentage <= 75) {
+                securityFill.classList.add('high');
+                document.getElementById('api-key-security-label').textContent = 'High Security';
+            } else {
+                securityFill.classList.add('very-high');
+                document.getElementById('api-key-security-label').textContent = 'Very High Security';
+            }
+            
+            // Update recommendation
+            const recommendation = document.getElementById('api-key-recommendation');
+            
+            if (securityScore >= 8) {
+                recommendation.innerHTML = '<strong>Recommendation:</strong> Excellent security practices! Using API keys in the Authorization header, stored in environment variables, and transmitted over HTTPS provides strong security.';
+            } else if (securityScore >= 6) {
+                recommendation.innerHTML = '<strong>Recommendation:</strong> Good security practices. Consider making the following improvements: ' + 
+                    (method !== 'header' ? 'Use Authorization header instead of ' + method + '. ' : '') +
+                    (storage !== 'env' ? 'Store API keys in environment variables instead of ' + storage + '. ' : '') +
+                    (transport !== 'https' ? 'Always use HTTPS for API requests. ' : '');
+            } else {
+                recommendation.innerHTML = '<strong>Warning:</strong> Your current configuration has security vulnerabilities. We strongly recommend: ' +
+                    'Using Authorization headers, storing keys in environment variables, and always using HTTPS.';
+            }
+            
+            recommendation.style.display = 'block';
+        }
+        
+        // Update OAuth recommendation
+        function updateOAuthRecommendation() {
+            const appType = document.getElementById('oauth-app-type').value;
+            const dataSensitivity = document.getElementById('oauth-data-sensitivity').value;
+            
+            const recommendation = document.getElementById('oauth-recommendation');
+            
+            if (appType === 'web') {
+                recommendation.innerHTML = '<strong>Recommended Grant Type:</strong> Authorization Code' +
+                    '<p>For web applications with backends, the Authorization Code grant provides the highest security. The client secret can be securely stored on your server, and the authorization code exchange happens server-side.</p>';
+            } else if (appType === 'spa') {
+                recommendation.innerHTML = '<strong>Recommended Grant Type:</strong> Authorization Code with PKCE' +
+                    '<p>For single-page applications without a backend, the Authorization Code grant with PKCE (Proof Key for Code Exchange) is recommended. This provides better security than the Implicit grant by preventing authorization code interception.</p>';
+            } else if (appType === 'mobile') {
+                recommendation.innerHTML = '<strong>Recommended Grant Type:</strong> Authorization Code with PKCE' +
+                    '<p>For mobile applications, the Authorization Code grant with PKCE is recommended. This prevents authorization code interception and is suitable for public clients that cannot securely store a client secret.</p>';
+            } else if (appType === 'server') {
+                recommendation.innerHTML = '<strong>Recommended Grant Type:</strong> Client Credentials' +
+                    '<p>For server-to-server authentication where no user is involved, the Client Credentials grant is appropriate. Both the client ID and secret can be securely stored on your server.</p>';
+            }
+            
+            // Add data sensitivity recommendations
+            if (dataSensitivity === 'high') {
+                recommendation.innerHTML += '<p><strong>Security Note:</strong> For highly sensitive data, consider additional security measures such as shorter token lifetimes, narrower scopes, and regular security audits.</p>';
+            }
+            
+            recommendation.style.display = 'block';
+        }
+        
+        // Generate JWT
+        function generateJWT() {
+            const username = document.getElementById('jwt-username').value;
+            const expiration = document.getElementById('jwt-expiration').value;
+            
+            // Get selected claims
+            const claimsSelect = document.getElementById('jwt-claims');
+            const selectedClaims = Array.from(claimsSelect.selectedOptions).map(option => option.value);
+            
+            // Create a simulated JWT
+            const header = {
+                "alg": "HS256",
+                "typ": "JWT"
+            };
+            
+            const payload = {
+                "sub": "1234567890",
+                "name": username,
+                "iat": Math.floor(Date.now() / 1000)
+            };
+            
+            // Add expiration based on selection
+            let expirationSeconds = 3600; // Default 1 hour
+            if (expiration === '5m') expirationSeconds = 300;
+            else if (expiration === '24h') expirationSeconds = 86400;
+            else if (expiration === '7d') expirationSeconds = 604800;
+            
+            payload.exp = Math.floor(Date.now() / 1000) + expirationSeconds;
+            
+            // Add selected claims
+            if (selectedClaims.includes('role')) {
+                payload.role = "user";
+            }
+            if (selectedClaims.includes('permissions')) {
+                payload.permissions = ["read", "write"];
+            }
+            if (selectedClaims.includes('email')) {
+                payload.email = username + "@example.com";
+            }
+            
+            // Encode header and payload (this is a simulation, not actual JWT encoding)
+            const encodedHeader = btoa(JSON.stringify(header));
+            const encodedPayload = btoa(JSON.stringify(payload));
+            const signature = "SIMULATED_SIGNATURE"; // In a real JWT, this would be cryptographically generated
+            
+            const jwt = `${encodedHeader}.${encodedPayload}.${signature}`;
+            
+            // Display the JWT and decoded parts
+            const result = document.getElementById('jwt-result');
+            result.innerHTML = `
+                <strong>JWT:</strong>
+                <div style="word-break: break-all;">${jwt}</div>
+                <br>
+                <strong>Header (decoded):</strong>
+                <pre>${JSON.stringify(header, null, 2)}</pre>
+                <br>
+                <strong>Payload (decoded):</strong>
+                <pre>${JSON.stringify(payload, null, 2)}</pre>
+                <br>
+                <p>This token will expire in ${expiration}.</p>
+            `;
+            result.style.display = 'block';
+        }
+        
+        // Check quiz answers
+        function checkQuiz() {
+            const correctAnswers = {
+                q1: 'c',
+                q2: 'c',
+                q3: 'c',
+                q4: 'c',
+                q5: 'a'
+            };
+            
+            let score = 0;
+            
+            // Check each question
+            for (const question in correctAnswers) {
+                const selectedOption = document.querySelector(`input[name="${question}"]:checked`);
+                const feedbackElement = document.getElementById(`feedback-${question}`);
+                
+                if (!selectedOption) {
+                    feedbackElement.textContent = "Please select an answer.";
+                    feedbackElement.className = "quiz-feedback incorrect";
+                    feedbackElement.style.display = 'block';
+                    continue;
+                }
+                
+                if (selectedOption.value === correctAnswers[question]) {
+                    score++;
+                    feedbackElement.textContent = "Correct!";
+                    feedbackElement.className = "quiz-feedback correct";
+                } else {
+                    feedbackElement.textContent = "Incorrect. Please try again.";
+                    feedbackElement.className = "quiz-feedback incorrect";
+                }
+                
+                feedbackElement.style.display = 'block';
+            }
+            
+            // Display overall score
+            const resultElement = document.getElementById('quiz-result');
+            resultElement.textContent = `Your score: ${score} out of 5`;
+            resultElement.style.display = 'block';
+            
+            // Provide feedback based on score
+            if (score === 5) {
+                resultElement.textContent += "\nExcellent! You have a solid understanding of API authentication methods.";
+            } else if (score >= 3) {
+                resultElement.textContent += "\nGood job! You understand the basics of API authentication, but there's still more to learn.";
+            } else {
+                resultElement.textContent += "\nYou might want to review the material again to strengthen your understanding of API authentication.";
+            }
+        }
+        
+        // Initialize interactive elements
+        updateApiKeySecurity();
+        updateOAuthRecommendation();
+    </script>
+</body>
+</html>

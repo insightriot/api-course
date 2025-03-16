@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Call Template Tool</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"], 
+        select, 
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f1f9ff;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        
+        .code-block {
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+            margin: 20px 0;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .parameter-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .parameter-name {
+            flex: 1;
+        }
+        
+        .parameter-value {
+            flex: 2;
+        }
+        
+        .parameter-description {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .add-param-btn {
+            background-color: #2ecc71;
+            margin-top: 10px;
+        }
+        
+        .remove-param-btn {
+            background-color: #e74c3c;
+            margin-left: 10px;
+            padding: 8px 12px;
+        }
+        
+        .copy-btn {
+            background-color: #9b59b6;
+            margin-top: 10px;
+        }
+        
+        .success-message {
+            color: #2ecc71;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Call Template Tool</h1>
+    <p>This tool helps you generate Python code for API calls without writing code from scratch. Select an API type, customize the parameters, and get ready-to-use code.</p>
+    
+    <div class="container">
+        <div class="form-group">
+            <label for="api-type">Select API Type:</label>
+            <select id="api-type" onchange="updateApiTemplate()">
+                <option value="openai">OpenAI (GPT Models)</option>
+                <option value="google">Google Gemini</option>
+                <option value="vector">Vector Store</option>
+                <option value="rest">REST API (Generic)</option>
+            </select>
+        </div>
+        
+        <div id="api-specific-params">
+            <!-- This will be populated based on the selected API type -->
+        </div>
+        
+        <div class="form-group">
+            <label>Authentication:</label>
+            <div class="parameter-row">
+                <div class="parameter-name">
+                    <select id="auth-type" onchange="updateAuthFields()">
+                        <option value="api_key">API Key</option>
+                        <option value="oauth">OAuth Token</option>
+                        <option value="none">No Authentication</option>
+                    </select>
+                </div>
+                <div class="parameter-value" id="auth-value-container">
+                    <input type="text" id="api-key-name" placeholder="Environment variable name (e.g., OPENAI_API_KEY)" value="OPENAI_API_KEY">
+                </div>
+            </div>
+            <div class="parameter-description">How the API will authenticate your requests. For security, we recommend using environment variables.</div>
+        </div>
+        
+        <div id="rest-params" style="display: none;">
+            <div class="form-group">
+                <label>HTTP Method:</label>
+                <select id="http-method">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                    <option value="PATCH">PATCH</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>API Endpoint URL:</label>
+                <input type="text" id="api-url" placeholder="https://api.example.com/data">
+            </div>
+            
+            <div class="form-group">
+                <label>Headers:</label>
+                <div id="headers-container">
+                    <div class="parameter-row">
+                        <div class="parameter-name">
+                            <input type="text" placeholder="Header name" value="Content-Type">
+                        </div>
+                        <div class="parameter-value">
+                            <input type="text" placeholder="Header value" value="application/json">
+                            <button class="remove-param-btn" onclick="removeParameter(this)">✕</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-param-btn" onclick="addHeader()">+ Add Header</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Query Parameters:</label>
+                <div id="params-container">
+                    <div class="parameter-row">
+                        <div class="parameter-name">
+                            <input type="text" placeholder="Parameter name" value="limit">
+                        </div>
+                        <div class="parameter-value">
+                            <input type="text" placeholder="Parameter value" value="10">
+                            <button class="remove-param-btn" onclick="removeParameter(this)">✕</button>
+                        </div>
+                    </div>
+                </div>
+                <button class="add-param-btn" onclick="addQueryParam()">+ Add Parameter</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Request Body (for POST/PUT/PATCH):</label>
+                <textarea id="request-body" placeholder='{"name": "example", "value": 123}'></textarea>
+            </div>
+        </div>
+        
+        <button onclick="generateCode()">Generate Code</button>
+        
+        <div class="result" id="code-result" style="display: none;">
+            <div class="code-block" id="generated-code"></div>
+            <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+            <div class="success-message" id="copy-success">Code copied to clipboard!</div>
+        </div>
+    </div>
+    
+    <script>
+        // Templates for different API types
+        const templates = {
+            openai: {
+                name: "OpenAI API",
+                fields: [
+                    {
+                        name: "model",
+                        label: "Model",
+                        type: "select",
+                        options: [
+                            { value: "gpt-4o", label: "GPT-4o (Most capable)" },
+                            { value: "gpt-3.5-turbo", label: "GPT-3.5 Turbo (Faster)" }
+                        ],
+                        default: "gpt-4o",
+                        description: "The AI model that will generate the response."
+                    },
+                    {
+                        name: "prompt",
+                        label: "Prompt",
+                        type: "textarea",
+                        default: "Explain what an API is in simple terms.",
+                        description: "The text prompt to send to the model."
+                    },
+                    {
+                        name: "temperature",
+                        label: "Temperature",
+                        type: "range",
+                        min: 0,
+                        max: 1,
+                        step: 0.1,
+                        default: 0.7,
+                        description: "Controls randomness: 0 is focused and deterministic, 1 is more random and creative."
+                    },
+                    {
+                        name: "max_tokens",
+                        label: "Maximum Length (tokens)",
+                        type: "range",
+                        min: 50,
+                        max: 500,
+                        step: 50,
+                        default: 150,
+                        description: "The maximum number of tokens (roughly words) to generate in the response."
+                    }
+                ],
+                codeTemplate: (values) => {
+                    return `import os
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("${values.auth.value}")
+
+# Initialize the OpenAI client
+client = OpenAI(api_key=api_key)
+
+# Define parameters
+prompt = "${values.prompt.replace(/"/g, '\\"')}"
+model = "${values.model}"
+temperature = ${values.temperature}
+max_tokens = ${values.max_tokens}
+
+# Make the API call
+response = client.chat.completions.create(
+    model=model,
+    messages=[
+        {"role": "user", "content": prompt}
+    ],
+    temperature=temperature,
+    max_tokens=max_tokens
+)
+
+# Print the response
+print(response.choices[0].message.content)`;
+                }
+            },
+            google: {
+                name: "Google Gemini API",
+                fields: [
+                    {
+                        name: "model",
+                        label: "Model",
+                        type: "select",
+                        options: [
+                            { value: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
+                            { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash (Faster)" }
+                        ],
+                        default: "gemini-1.5-pro",
+                        description: "The Gemini model to use."
+                    },
+                    {
+                        name: "prompt",
+                        label: "Prompt",
+                        type: "textarea",
+                        default: "Explain what an API is in simple terms.",
+                        description: "The text prompt to send to the model."
+                    },
+                    {
+                        name: "temperature",
+                        label: "Temperature",
+                        type: "range",
+                        min: 0,
+                        max: 1,
+                        step: 0.1,
+                        default: 0.7,
+                        description: "Controls randomness: 0 is focused and deterministic, 1 is more random and creative."
+                    },
+                    {
+                        name: "max_tokens",
+                        label: "Maximum Length (tokens)",
+                        type: "range",
+                        min: 50,
+                        max: 500,
+                        step: 50,
+                        default: 150,
+                        description: "The maximum number of tokens to generate in the response."
+                    }
+                ],
+                codeTemplate: (values) => {
+                    return `import os
+import google.generativeai as genai
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get API key from environment variable
+api_key = os.getenv("${values.auth.value}")
+
+# Configure the Gemini API
+genai.configure(api_key=api_key)
+
+# Define parameters
+prompt = "${values.prompt.replace(/"/g, '\\"')}"
+model_name = "${values.model}"
+temperature = ${values.temperature}
+max_tokens = ${values.max_tokens}
+
+# Initialize the model
+model = genai.GenerativeModel(model_name)
+
+# Generate content
+response = model.generate_content(
+    prompt,
+    generation_config={
+        "temperature": temperature,
+        "max_output_tokens": max_tokens
+    }
+)
+
+# Print the response
+print(response.text)`;
+                }
+            },
+            vector: {
+                name: "Vector Store",
+                fields: [
+                    {
+                        name: "documents",
+                        label: "Documents (one per line)",
+                        type: "textarea",
+                        default: "APIs are interfaces that allow different software applications to communicate.\nPython is a popular programming language for data science and AI.\nVector embeddings represent text as numbers to capture meaning.\nAuthentication is important for securing API access.",
+                        description: "The documents to add to the vector store (one per line)."
+                    },
+                    {
+                        name: "query",
+                        label: "Search Query",
+                        type: "text",
+                        default: "How do computer programs talk to each other?",
+                        description: "The query to search for similar documents."
+                    },
+                    {
+                        name: "num_results",
+                        label: "Number of Results",
+                        type: "range",
+                        min: 1,
+                        max: 5,
+                        step: 1,
+                        default: 3,
+                        description: "The number of similar documents to retrieve."
+                    }
+                ],
+                codeTemplate: (values) => {
+                    const documents = values.documents.split('\n').filter(doc => doc.trim() !== '');
+                    const documentsList = documents.map(doc => `    search.add_document("${doc.replace(/"/g, '\\"')}")`).join('\n');
+                    
+                    return `import os
+import numpy as np
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+class SimpleVectorSearch:
+    def __init__(self):
+        """Initialize the vector search with empty documents and embeddings."""
+        self.documents = []
+        self.embeddings = []
+        
+        # Get API key from environment variable
+        api_key = os.getenv("${values.auth.value}")
+        
+        # Initialize the OpenAI client
+        self.client = OpenAI(api_key=api_key)
+    
+    def add_document(self, text):
+        """Add a document to the vector search."""
+        # Get embedding from OpenAI
+        embedding = self._get_embedding(text)
+        
+        # Store document and embedding
+        self.documents.append(text)
+        self.embeddings.append(embedding)
+    
+    def search(self, query, top_k=3):
+        """Search for documents similar to the query."""
+        # Get embedding for the query
+        query_embedding = self._get_embedding(query)
+        
+        # Calculate similarity with all documents
+        similarities = []
+        for doc_embedding in self.embeddings:
+            similarity = self._calculate_similarity(query_embedding, doc_embedding)
+            similarities.append(similarity)
+        
+        # Get indices of top_k most similar documents
+        top_indices = np.argsort(similarities)[-top_k:][::-1]
+        
+        # Return results
+        results = []
+        for idx in top_indices:
+            results.append((self.documents[idx], similarities[idx]))
+        
+        return results
+    
+    def _get_embedding(self, text):
+        """Get embedding from OpenAI."""
+        response = self.client.embeddings.create(
+            model="text-embedding-ada-002",
+            input=text
+        )
+        return response.data[0].embedding
+    
+    def _calculate_similarity(self, embedding1, embedding2):
+        """Calculate cosine similarity between two embeddings."""
+        return np.dot(embedding1, embedding2) / (
+            np.linalg.norm(embedding1) * np.linalg.norm(embedding2)
+        )
+
+# Create a vector search
+search = SimpleVectorSearch()
+
+# Add documents
+${documentsList}
+
+# Search for similar documents
+query = "${values.query.replace(/"/g, '\\"')}"
+results = search.search(query, top_k=${values.num_results})
+
+# Display results
+for i, (document, similarity) in enumerate(results):
+    print(f"{i+1}. Similarity: {similarity:.4f}")
+    print(f"   Document: {document}\\n")`;
+                }
+            },
+            rest: {
+                name: "REST API",
+                fields: [],
+                codeTemplate: (values) => {
+                    // Process headers
+                    const headerRows = document.querySelectorAll('#headers-container .parameter-row');
+                    let headers = {};
+                    headerRows.forEach(row => {
+                        const nameInput = row.querySelector('.parameter-name input');
+                        const valueInput = row.querySelector('.parameter-value input');
+                        if (nameInput.value.trim() !== '') {
+                            headers[nameInput.value] = valueInput.value;
+                        }
+                    });
+                    
+                    // Process query parameters
+                    const paramRows = document.querySelectorAll('#params-container .parameter-row');
+                    let params = {};
+                    paramRows.forEach(row => {
+                        const nameInput = row.querySelector('.parameter-name input');
+                        const valueInput = row.querySelector('.parameter-value input');
+                        if (nameInput.value.trim() !== '') {
+                            params[nameInput.value] = valueInput.value;
+                        }
+                    });
+                    
+                    // Get other values
+                    const method = document.getElementById('http-method').value;
+                    const url = document.getElementById('api-url').value;
+                    const body = document.getElementById('request-body').value;
+                    
+                    // Build headers string
+                    let headersStr = 'headers = {\n';
+                    for (const [key, value] of Object.entries(headers)) {
+                        headersStr += `    "${key}": "${value}",\n`;
+                    }
+                    
+                    // Add auth header if needed
+                    if (values.auth.type === 'api_key') {
+                        headersStr += `    "Authorization": f"Bearer {api_key}",\n`;
+                    } else if (values.auth.type === 'oauth') {
+                        headersStr += `    "Authorization": f"Bearer {oauth_token}",\n`;
+                    }
+                    
+                    headersStr += '}\n';
+                    
+                    // Build params string
+                    let paramsStr = 'params = {\n';
+                    for (const [key, value] of Object.entries(params)) {
+                        // Check if value is numeric
+                        const numValue = Number(value);
+                        if (!isNaN(numValue) && value.trim() !== '') {
+                            paramsStr += `    "${key}": ${numValue},\n`;
+                        } else {
+                            paramsStr += `    "${key}": "${value}",\n`;
+                        }
+                    }
+                    paramsStr += '}\n';
+                    
+                    // Build auth section
+                    let authSection = '';
+                    if (values.auth.type === 'api_key') {
+                        authSection = `# Get API key from environment variable
+api_key = os.getenv("${values.auth.value}")
+
+if not api_key:
+    raise ValueError("API key not found in environment variables")
+`;
+                    } else if (values.auth.type === 'oauth') {
+                        authSection = `# Get OAuth token from environment variable
+oauth_token = os.getenv("${values.auth.value}")
+
+if not oauth_token:
+    raise ValueError("OAuth token not found in environment variables")
+`;
+                    }
+                    
+                    // Build request section based on method
+                    let requestSection = '';
+                    if (method === 'GET') {
+                        requestSection = `response = requests.get(url, headers=headers, params=params)`;
+                    } else if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+                        let bodyStr = '';
+                        if (body.trim() !== '') {
+                            bodyStr = `\n\n# Request body\nbody = ${body}\n`;
+                            requestSection = `response = requests.${method.toLowerCase()}(url, headers=headers, params=params, json=body)`;
+                        } else {
+                            requestSection = `response = requests.${method.toLowerCase()}(url, headers=headers, params=params)`;
+                        }
+                    } else if (method === 'DELETE') {
+                        requestSection = `response = requests.delete(url, headers=headers, params=params)`;
+                    }
+                    
+                    return `import os
+import requests
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+${authSection}
+# API endpoint
+url = "${url}"
+
+# Request headers
+${headersStr}
+# Query parameters
+${paramsStr}${body.trim() !== '' ? `\n# Request body\nbody = ${body}\n` : ''}
+# Make the request
+${requestSection}
+
+# Check if the request was successful
+if response.status_code >= 200 and response.status_code < 300:
+    # Print the response
+    print("Request successful!")
+    try:
+        # Try to parse as JSON
+        data = response.json()
+        print("Response data:")
+        print(data)
+    except:
+        # If not JSON, print as text
+        print("Response text:")
+        print(response.text)
+else:
+    print(f"Request failed with status code: {response.status_code}")
+    print(f"Error message: {response.text}")`;
+                }
+            }
+        };
+        
+        // Initialize the page
+        function init() {
+            updateApiTemplate();
+        }
+        
+        // Update the API-specific parameters based on the selected API type
+        function updateApiTemplate() {
+            const apiType = document.getElementById('api-type').value;
+            const template = templates[apiType];
+            const container = document.getElementById('api-specific-params');
+            
+            // Show/hide REST params
+            document.getElementById('rest-params').style.display = apiType === 'rest' ? 'block' : 'none';
+            
+            // Clear existing fields
+            container.innerHTML = '';
+            
+            // Add fields for the selected API type
+            if (apiType !== 'rest') {
+                template.fields.forEach(field => {
+                    const formGroup = document.createElement('div');
+                    formGroup.className = 'form-group';
+                    
+                    const label = document.createElement('label');
+                    label.textContent = field.label + (field.type === 'range' ? `: ` : '');
+                    
+                    if (field.type === 'range') {
+                        const valueSpan = document.createElement('span');
+                        valueSpan.id = `${field.name}-value`;
+                        valueSpan.textContent = field.default;
+                        label.appendChild(valueSpan);
+                    }
+                    
+                    formGroup.appendChild(label);
+                    
+                    let input;
+                    
+                    if (field.type === 'select') {
+                        input = document.createElement('select');
+                        input.id = field.name;
+                        
+                        field.options.forEach(option => {
+                            const optionElement = document.createElement('option');
+                            optionElement.value = option.value;
+                            optionElement.textContent = option.label;
+                            input.appendChild(optionElement);
+                        });
+                        
+                        input.value = field.default;
+                    } else if (field.type === 'textarea') {
+                        input = document.createElement('textarea');
+                        input.id = field.name;
+                        input.value = field.default;
+                    } else if (field.type === 'range') {
+                        input = document.createElement('input');
+                        input.type = 'range';
+                        input.id = field.name;
+                        input.min = field.min;
+                        input.max = field.max;
+                        input.step = field.step;
+                        input.value = field.default;
+                        
+                        input.oninput = function() {
+                            document.getElementById(`${field.name}-value`).textContent = this.value;
+                        };
+                    } else {
+                        input = document.createElement('input');
+                        input.type = field.type;
+                        input.id = field.name;
+                        input.value = field.default;
+                    }
+                    
+                    formGroup.appendChild(input);
+                    
+                    if (field.description) {
+                        const description = document.createElement('div');
+                        description.className = 'parameter-description';
+                        description.textContent = field.description;
+                        formGroup.appendChild(description);
+                    }
+                    
+                    container.appendChild(formGroup);
+                });
+            }
+            
+            // Update auth field default based on API type
+            updateAuthDefault(apiType);
+        }
+        
+        // Update authentication fields based on the selected auth type
+        function updateAuthFields() {
+            const authType = document.getElementById('auth-type').value;
+            const container = document.getElementById('auth-value-container');
+            
+            container.innerHTML = '';
+            
+            if (authType === 'api_key') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'api-key-name';
+                input.placeholder = 'Environment variable name (e.g., OPENAI_API_KEY)';
+                input.value = 'OPENAI_API_KEY';
+                container.appendChild(input);
+            } else if (authType === 'oauth') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.id = 'oauth-token-name';
+                input.placeholder = 'Environment variable name (e.g., OAUTH_TOKEN)';
+                input.value = 'OAUTH_TOKEN';
+                container.appendChild(input);
+            }
+        }
+        
+        // Update auth default based on API type
+        function updateAuthDefault(apiType) {
+            if (apiType === 'openai') {
+                document.getElementById('api-key-name').value = 'OPENAI_API_KEY';
+            } else if (apiType === 'google') {
+                document.getElementById('api-key-name').value = 'GOOGLE_API_KEY';
+            } else if (apiType === 'vector') {
+                document.getElementById('api-key-name').value = 'OPENAI_API_KEY';
+            } else {
+                document.getElementById('api-key-name').value = 'API_KEY';
+            }
+        }
+        
+        // Add a new header field
+        function addHeader() {
+            const container = document.getElementById('headers-container');
+            
+            const row = document.createElement('div');
+            row.className = 'parameter-row';
+            
+            const nameCol = document.createElement('div');
+            nameCol.className = 'parameter-name';
+            
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'Header name';
+            
+            nameCol.appendChild(nameInput);
+            
+            const valueCol = document.createElement('div');
+            valueCol.className = 'parameter-value';
+            
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = 'Header value';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-param-btn';
+            removeBtn.textContent = '✕';
+            removeBtn.onclick = function() { removeParameter(this); };
+            
+            valueCol.appendChild(valueInput);
+            valueCol.appendChild(removeBtn);
+            
+            row.appendChild(nameCol);
+            row.appendChild(valueCol);
+            
+            container.appendChild(row);
+        }
+        
+        // Add a new query parameter field
+        function addQueryParam() {
+            const container = document.getElementById('params-container');
+            
+            const row = document.createElement('div');
+            row.className = 'parameter-row';
+            
+            const nameCol = document.createElement('div');
+            nameCol.className = 'parameter-name';
+            
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'Parameter name';
+            
+            nameCol.appendChild(nameInput);
+            
+            const valueCol = document.createElement('div');
+            valueCol.className = 'parameter-value';
+            
+            const valueInput = document.createElement('input');
+            valueInput.type = 'text';
+            valueInput.placeholder = 'Parameter value';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-param-btn';
+            removeBtn.textContent = '✕';
+            removeBtn.onclick = function() { removeParameter(this); };
+            
+            valueCol.appendChild(valueInput);
+            valueCol.appendChild(removeBtn);
+            
+            row.appendChild(nameCol);
+            row.appendChild(valueCol);
+            
+            container.appendChild(row);
+        }
+        
+        // Remove a parameter field
+        function removeParameter(button) {
+            const row = button.closest('.parameter-row');
+            row.remove();
+        }
+        
+        // Generate code based on the selected API type and parameters
+        function generateCode() {
+            const apiType = document.getElementById('api-type').value;
+            const template = templates[apiType];
+            
+            // Get authentication details
+            const authType = document.getElementById('auth-type').value;
+            let authValue = '';
+            
+            if (authType === 'api_key') {
+                authValue = document.getElementById('api-key-name').value;
+            } else if (authType === 'oauth') {
+                authValue = document.getElementById('oauth-token-name').value;
+            }
+            
+            // Get values for the selected API type
+            const values = {
+                auth: {
+                    type: authType,
+                    value: authValue
+                }
+            };
+            
+            if (apiType !== 'rest') {
+                template.fields.forEach(field => {
+                    values[field.name] = document.getElementById(field.name).value;
+                });
+            }
+            
+            // Generate the code
+            const code = template.codeTemplate(values);
+            
+            // Display the code
+            document.getElementById('generated-code').textContent = code;
+            document.getElementById('code-result').style.display = 'block';
+        }
+        
+        // Copy the generated code to clipboard
+        function copyCode() {
+            const code = document.getElementById('generated-code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const successMessage = document.getElementById('copy-success');
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 3000);
+            });
+        }
+        
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>
